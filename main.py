@@ -1,7 +1,5 @@
 # -*- coding: UTF-8 -*-
-import sys
 import time
-import telepot
 from gui import *
 from telepot.loop import MessageLoop
 from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton
@@ -36,6 +34,8 @@ class Alumno:
             self.grado = 'IC'
         elif g == 'Videojuegos':
             self.grado = 'DV'
+        elif g == 'Optativas':
+            self.grado = 'OP'
 
     def parseGrupo(g):
         grupo = g.upper()
@@ -55,9 +55,37 @@ class BotMentorStarter(telepot.helper.ChatHandler):
             content_type, chat_type, chat_id = telepot.glance(msg)
             global mid
             self.sender.sendMessage(
-                'Hola!!\nEste bot te sirve para consultar informaci├│n sobre Tutorias, horarios, profesores y mucho m├ís.\nPulsa "Consultar" para comenzar a utilizar el BotMentor de la Facultad de inform├ítica de la UCM')
+                'Hola!!\nEste bot te sirve para consultar información sobre Tutorias, horarios, profesores y mucho más.\nPulsa "Consultar" para comenzar a utilizar el BotMentor de la Facultad de informática de la UCM')
             sent = self.sender.sendMessage('Pulse en empezar', reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text='Empezar', callback_data='menu'), ]]))
-            mid = telepot.message_identifier(sent)
+            menu(self)
+        elif msg['text'] == '/menu':
+            content_type, chat_type, chat_id = telepot.glance(msg)
+            menu(self)
+           # self.sender.sendMessage('Seleccione la opción deseada',)
+        elif msg['text'] == 'Horarios' or msg['text'] == '/horarios':
+            content_type, chat_type, chat_id = telepot.glance(msg)
+            horarios(self)
+        elif msg['text'] == 'Volver' or msg['text'] == '/volver':
+            content_type, chat_type, chat_id = telepot.glance(msg)
+            menu(self)
+        elif msg['text'] == 'Fichas docentes' or msg['text'] == '/fichas':
+            content_type, chat_type, chat_id = telepot.glance(msg)
+            fichas(self)
+        elif msg['text'] == 'Profesores' or msg['text'] == '/profesores':
+            content_type, chat_type, chat_id = telepot.glance(msg)
+            profesores(self)
+            global profesorRequest
+            profesorRequest = True
+        elif msg['text'] == 'Clases' or msg['text'] == '/clases':
+            content_type, chat_type, chat_id = telepot.glance(msg)
+            clases(self)
+            global profesorRequest
+            profesorRequest = True
+        elif msg['text'] == 'Fichas de curso completo' or msg['text'] == '/fcurso':
+            # self.sender.forceReply(force_reply= True)
+            seleccionGrado(self)
+            global gradoRequest
+            gradoRequest = True
         elif profesorRequest:
             global profesorNombre
             profesorNombre = msg['text']
@@ -76,7 +104,7 @@ class BotMentorStarter(telepot.helper.ChatHandler):
             cursoRequest = True
             global al
             al.parseGrado(msg['text'])
-            seleccionCurso(chat_id, msg, bot, al.grado)
+            seleccionCurso(self, al.grado)
             al.setCurso(msg['text'])
         elif cursoRequest:
             content_type, chat_type, chat_id = telepot.glance(msg)
@@ -84,8 +112,7 @@ class BotMentorStarter(telepot.helper.ChatHandler):
             cursoRequest = False
             grupoRequest = True
             global al
-            seleccionCurso(chat_id,msg,bot,al.grado)
-
+            seleccionCurso(self,al.grado)
 
 class BotMentor(telepot.helper.ChatHandler):
     def __init__(self, *args, **kwargs):
@@ -106,13 +133,13 @@ class BotMentor(telepot.helper.ChatHandler):
             global mid
             mid = telepot.message_identifier(sent)
         elif query_data == 'horarios':
-            mid = horarios(from_id, mid, bot)
+            mid = horarios(self)
         elif query_data == 'fichas':
-            mid = fichas(from_id, mid, bot)
+            mid = fichas(self)
         elif query_data == 'profesores':
             global profesorRequest
             profesorRequest = True
-            mid = profesores(from_id, mid, bot)
+            mid = profesores(self)
         elif query_data == 'clases':
             mid = clases(from_id, mid, bot)
         elif query_data == 'fCurso':
