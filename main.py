@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 import time
 from gui import *
-from parser import *
+from CommandParser import *
 from telepot.loop import MessageLoop
 from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton
 from telepot.delegate import (
@@ -46,25 +46,31 @@ class Alumno:
     def setGrupo (self,g):
         self.grupo = g
 class Comando:
+    com = None
     grado= None
     curso= None
     grupo= None
     nombre = None
     apellido = None
     def __init__(self, c):
-
-        if len(c) == 2:
+        if len(c) == 1:
+            self.com = c[0]
+        elif len(c) == 2:
+            self.com = c[0]
             self.nombre = c[1]
         elif len(c) == 3:
+            self.com = c[0]
             self.nombre = c[1]
             self.apellido = c[2]
         elif len(c) == 4:
+            self.com = c[0]
             self.grado = c[1]
-            self.curso = c[2]
+            self.curso = int(c[2])
             self.grupo = c [3]
         elif len(c) == 5:
+            self.com = c[0]
             self.grado = c[1]
-            self.curso = c[2]
+            self.curso = int(c[2])
             self.grupo = c [3]
             self.nombre = c[4]
 
@@ -81,84 +87,74 @@ class BotMentorStarter(telepot.helper.ChatHandler):
             content_type, chat_type, chat_id = telepot.glance(msg)
             command = msg['text'].split()
             global comando
-            commando = Comando(command)
-            if msg['text'] == '/start':
-                global mid
-                self.sender.sendMessage(
-                    'Hola!!\nEste bot te sirve para consultar información sobre Tutorias, horarios, profesores y mucho más.\nPulsa "Consultar" para comenzar a utilizar el BotMentor de la Facultad de informática de la UCM')
-                sent = self.sender.sendMessage('Pulse en empezar', reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text='Empezar', callback_data='menu'), ]]))
-                menu(self)
-            elif msg['text'] == '/menu':
-                content_type, chat_type, chat_id = telepot.glance(msg)
-                menu(self)
-               # self.sender.sendMessage('Seleccione la opción deseada',)
-            elif msg['text'] == '/horario':
-                parse
-            elif msg['text'] == 'Horarios' or msg['text'] == '/horarios':
-                content_type, chat_type, chat_id = telepot.glance(msg)
-                horarios(self)
-            elif msg['text'] == 'Volver' or msg['text'] == '/volver':
-                content_type, chat_type, chat_id = telepot.glance(msg)
-                menu(self)
-            elif msg['text'] == 'Fichas docentes' or msg['text'] == '/fichas':
-                content_type, chat_type, chat_id = telepot.glance(msg)
-                fichas(self)
-            elif msg['text'] == '/ficha':
-                fichas(self)
-            elif msg['text'] == '/tutoria':
-                fichas(self)
-            elif msg['text'] == '/ayuda':
-                fichas(self)
-            elif msg['text'] == 'Profesores' or msg['text'] == '/profesor':
-                content_type, chat_type, chat_id = telepot.glance(msg)
-                profesores(self)
-                global profesorRequest
-                profesorRequest = True
-            elif msg['text'] == 'Clases' or msg['text'] == '/clase':
-                content_type, chat_type, chat_id = telepot.glance(msg)
-                clases(self)
-                global profesorRequest
-                profesorRequest = True
-            elif msg['text'] == 'Fichas de curso completo' or msg['text'] == '/fcurso':
-                # self.sender.forceReply(force_reply= True)
-                seleccionGrado(self)
-                global cursoRequest
-                cursoRequest = True
-            elif profesorRequest:
-                global profesorNombre
-                profesorNombre = msg['text']
-                print(profesorNombre)
-                self.sender.sendMessage('Espera mientras busco a ' + profesorNombre + ' en mi base de datos')
-                global profesorRequest
-                profesorRequest = False
-            elif claseRequest:
-                global claseRequest
-                claseRequest = False
-                self.sender.sendMessage('Vamos a ver, que clase quieres ver')
-            elif cursoRequest:
-                content_type, chat_type, chat_id = telepot.glance(msg)
-                global cursoRequest, grupoRequest
-                cursoRequest = False
-                grupoRequest = True
-                global al
-                al.parseGrado(msg['text'])
-                seleccionCurso(self, al.grado)
-                al.setCurso(msg['text'])
-            elif grupoRequest:
-                content_type, chat_type, chat_id = telepot.glance(msg)
-                global grupoRequest, cursoRequest
-                grupoRequest = False
-                global al
-                seleccionGrupo(self,al.grado)
-                al.setGrupo(msg['text'])
-            elif grupoRequest:
-                content_type, chat_type, chat_id = telepot.glance(msg)
-                global grupoRequest, cursoRequest
-                cursoRequest = False
-                grupoRequest = False
-                global al
-                seleccionGrupo(self,al.grupo)
-                al.setGrupo(msg['text'])
+            comando = Comando(command)
+            if parseCommand(self,comando):
+                if comando.com == '/start':
+                    global mid
+                    self.sender.sendMessage(
+                        'Hola!!\nEste bot te sirve para consultar información sobre Tutorias, horarios, profesores y mucho más.\nPulsa "Consultar" para comenzar a utilizar el BotMentor de la Facultad de informática de la UCM')
+                    sent = self.sender.sendMessage('Pulse en empezar', reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text='Empezar', callback_data='menu'), ]]))
+                    menu(self)
+                elif comando.com == '/menu':
+                    menu(self)
+                elif comando.com == '/horario':
+                    self.sender.sendMessage('comando horario parseado bien!')
+                elif comando.com == 'Horarios' or comando.com == '/horarios':
+                    self.sender.sendMessage('comando horarios parseado bien!')
+                elif comando.com == 'Volver' or comando.com == '/volver':
+                    self.sender.sendMessage('comando volver parseado bien!')
+                    menu(self)
+                elif comando.com == 'Fichas docentes' or comando.com == '/fichas':
+                    self.sender.sendMessage('comando fichas parseado bien!')
+                elif comando.com == '/ficha':
+                    self.sender.sendMessage('comando ficha parseado bien!')
+                elif comando.com == '/tutoria':
+                    self.sender.sendMessage('comando tutoria parseado bien!')
+                elif comando.com == '/ayuda':
+                    self.sender.sendMessage('comando ayuda parseado bien!')
+                elif comando.com == 'Profesores' or comando.com == '/profesor':
+                    self.sender.sendMessage('comando profesor parseado bien!')
+                elif comando.com == 'Clases' or comando.com == '/clase':
+                    self.sender.sendMessage('comando clase parseado bien!')
+                elif comando.com == 'Fichas de curso completo' or comando.com == '/fcurso':
+                    seleccionGrado(self)
+                    global cursoRequest
+                    cursoRequest = True
+                elif profesorRequest:
+                    global profesorNombre
+                    profesorNombre = msg['text']
+                    print(profesorNombre)
+                    self.sender.sendMessage('Espera mientras busco a ' + profesorNombre + ' en mi base de datos')
+                    global profesorRequest
+                    profesorRequest = False
+                elif claseRequest:
+                    global claseRequest
+                    claseRequest = False
+                    self.sender.sendMessage('Vamos a ver, que clase quieres ver')
+                elif cursoRequest:
+                    content_type, chat_type, chat_id = telepot.glance(msg)
+                    global cursoRequest, grupoRequest
+                    cursoRequest = False
+                    grupoRequest = True
+                    global al
+                    al.parseGrado(msg['text'])
+                    seleccionCurso(self, al.grado)
+                    al.setCurso(msg['text'])
+                elif grupoRequest:
+                    content_type, chat_type, chat_id = telepot.glance(msg)
+                    global grupoRequest, cursoRequest
+                    grupoRequest = False
+                    global al
+                    seleccionGrupo(self,al.grado)
+                    al.setGrupo(msg['text'])
+                elif grupoRequest:
+                    content_type, chat_type, chat_id = telepot.glance(msg)
+                    global grupoRequest, cursoRequest
+                    cursoRequest = False
+                    grupoRequest = False
+                    global al
+                    seleccionGrupo(self,al.grupo)
+                    al.setGrupo(msg['text'])
 
 class BotMentor(telepot.helper.ChatHandler):
     def __init__(self, *args, **kwargs):
