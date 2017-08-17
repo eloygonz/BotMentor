@@ -48,11 +48,10 @@ def seleccionCurso(self,grado):
     self.sender.sendMessage("Selecciona el curso:", reply_markup=ReplyKeyboardMarkup(keyboard = cursos, resize_keyboard = True))
 
 
-def seleccionGrupo(id, msg, bot):
+def seleccionGrupo(self,grupo):
     keyboard = [
-        [KeyboardButton(text='Informática'), KeyboardButton(text='Software'), KeyboardButton(text='Computadores')],
-        [KeyboardButton(text='Videojuegos'), KeyboardButton(text='Máster'), KeyboardButton(text='Optativas')]]
-    bot.editMessageText(id, "Selecciona la titulación:", reply_markup=keyboard)
-    content_type, chat_type, chat_id = telepot.glance(msg)
+        [KeyboardButton(text='A'), KeyboardButton(text='B'), KeyboardButton(text='C')],
+        [KeyboardButton(text='D'), KeyboardButton(text='E'), KeyboardButton(text='F')]]
+    self.sender.sendMessage("Selecciona la titulación:", reply_markup=keyboard)
 
 
