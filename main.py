@@ -2,6 +2,7 @@
 import time
 from gui import *
 from CommandParser import *
+from consultor import prueba
 from telepot.loop import MessageLoop
 from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton
 from telepot.delegate import (
@@ -95,6 +96,7 @@ class BotMentorStarter(telepot.helper.ChatHandler):
                         'Hola!!\nEste bot te sirve para consultar información sobre Tutorias, horarios, profesores y mucho más.\nPulsa "Consultar" para comenzar a utilizar el BotMentor de la Facultad de informática de la UCM')
                     sent = self.sender.sendMessage('Pulse en empezar', reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text='Empezar', callback_data='menu'), ]]))
                     menu(self)
+                    prueba()
                 elif comando.com == '/menu':
                     menu(self)
                 elif comando.com == '/horario':
@@ -215,7 +217,7 @@ bot = telepot.DelegatorBot(TOKEN, [
 ])
 
 MessageLoop(bot).run_as_thread()
-print('Listening ...')
+print('Ejecutando BotMentor...')
 
 # Keep the program running.
 while 1:
