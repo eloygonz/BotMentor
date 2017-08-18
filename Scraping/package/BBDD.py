@@ -60,22 +60,37 @@ class DBHorarios:
        
         cont = 0;
         for key, value in tablas.items():
-         
+
+            keyX = ''
+
+            if 'INGENIERO EN INFORMÁTICA' == key:
+                keyX = 'II'
+            elif 'MÁSTER INGENIERÍA INFORMÁTICA' == key:
+                keyX = 'MII'
+            elif 'GRADO EN INGENIERÍA DE COMPUTADORES' == key:
+                keyX = 'GIC'
+            elif 'GRADO EN INGENIERÍA INFORMÁTICA' == key:
+                keyX = 'GII'
+            elif 'GRADO EN INGENIERÍA DEL SOFTWARE' == key:
+                keyX = 'GIS'
+            elif 'GRADO EN DESARROLLO DE VIDEOJUEGOS' == key:
+                keyX = 'GDV'
+            elif 'DOBLE GRADO DE MATEMÁTICAS E INFORMÁTICA' == key:
+                keyX = 'DGMI'
+
             for v  in value:
                 #req = (id_curso, grado, curso, grupo)
-                
-            
+                    
                 if ('Optativas' in v ):
                     lista = v.split('Optativas')
-                    reg = (cont, key, 0, lista[len(lista)-1])
+                    reg = (cont, keyX, 0, lista[len(lista)-1])
         
                 else:
 
                     lista = v.split('º')
                    
-                    reg = (cont, key, lista[0], lista[1])
+                    reg = (cont, keyX, lista[0], lista[1])
 
-                print(reg)
                 cursor.execute("INSERT INTO Cursos VALUES (?,?,?,?)", reg)
                 cont = cont + 1
 
