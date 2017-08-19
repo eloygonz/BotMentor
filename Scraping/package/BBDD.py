@@ -32,7 +32,20 @@ class DBHorarios:
     	for tupla in cursor.fetchall():
     		print (tupla)  
 
-    
+    def selectCursos(self):
+
+        cursor = self.db.cursor();
+        
+
+        #cursor.execute("""insert into horarios values (3, 'GIS2', 'segundo', 'fp', '2017-03-17', 8, 10)""")
+
+        #self.db.commit()
+
+        #cursor.execute("""select * from horarios where curso = 'GIS2' """)  
+        cursor.execute("""select * from Cursos where grado='GII' and curso=3 and grupo='A'""")  
+        
+        for tupla in cursor.fetchall():
+            print (tupla) 
 
 
 
@@ -83,13 +96,13 @@ class DBHorarios:
                     
                 if ('Optativas' in v ):
                     lista = v.split('Optativas')
-                    reg = (cont, keyX, 0, lista[len(lista)-1])
+                    reg = (cont, keyX, 0, lista[len(lista)-1].strip())
         
                 else:
 
                     lista = v.split('º')
                    
-                    reg = (cont, keyX, lista[0], lista[1])
+                    reg = (cont, keyX, lista[0], lista[1].strip())
 
                 cursor.execute("INSERT INTO Cursos VALUES (?,?,?,?)", reg)
                 cont = cont + 1
@@ -215,7 +228,7 @@ class DBHorarios:
         for k, v in a.items():
 
             au = k.split('-')
-            au = au[1]
+            au = au[1].strip()
             
             #reqA = ("id_aulas", id_clase", "Aula_lab")
             regA = (self.c, id_clase, au)

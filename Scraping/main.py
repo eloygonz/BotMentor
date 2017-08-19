@@ -26,6 +26,7 @@ def main():
 	d.insertarAsignaturas(tabAsignaturas);
 
 	d.insertarCursos(dicCursos);
+	d.selectCursos();
 
 
 
