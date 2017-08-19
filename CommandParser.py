@@ -1,4 +1,5 @@
 # coding=utf-8
+from consultor import *
 """"
 def parseGrado(self, c):
     if c.grado == 'MI' or c.grado == 'IS' or c.grado == 'IC' or c.grado == 'II' or c.grado == ':
@@ -44,8 +45,11 @@ def numCurso(self, grado):
 
 
 def parseGrupo(self,command):
-    return True
-
+    res = consultaGrupo(command.curso, command.grado, command.grupo)
+    if res:
+        return True
+    else:
+        return False
 
 def existeAsignatura(self, nombre):
     return True
@@ -60,7 +64,7 @@ def parseCommand(self, command):
     listaComandosCompletos = ['/horarios', '/fichas']
     listaComandosSimples = ['ayuda', '/start']
     listaComandosEspecificos = ['/horario', '/tutoria', '/clase']
-    listaGrados = ['II', 'IS', 'IC', 'MII', 'DV', 'OP']
+    listaGrados = ['GII', 'GIS', 'GIC', 'GDV', 'II', 'MII', 'DGMI']
     if command.com in listaComandosCompletos:
         if command.grado != None and command.grado in listaGrados:
             if command.curso != None and numCurso(self,command.grado) >= command.curso and command.curso >= 0:

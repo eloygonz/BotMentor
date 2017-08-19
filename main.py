@@ -25,19 +25,17 @@ class Alumno:
         grado = 'II'
         grupo = 'A'
 
-    def parseGrado(self,g):
+    def parseGrado(self, g):
         if g == u'Informática':
-            self.grado = 'II'
+            self.grado = 'GII'
         elif g == 'Software':
-            self.grado = 'IS'
+            self.grado = 'GIS'
         elif g == u'Máster':
-            self.grado = 'MI'
+            self.grado = 'MII'
         elif g == 'Computadores':
-            self.grado = 'IC'
+            self.grado = 'GIC'
         elif g == 'Videojuegos':
-            self.grado = 'DV'
-        elif g == 'Optativas':
-            self.grado = 'OP'
+            self.grado = 'GDV'
 
     def parseGrupo(g):
         grupo = g.upper()
