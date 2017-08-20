@@ -1,1 +1,0 @@
-horarios - Ej: "/horarios IS 3 B" o (Utiliza las siglas del grado/master por ejemplo: "/horarios IS 1 B" (consulta los horarios de todas las asignaturas de 1ºB del grado en Ingeniería de Software)
