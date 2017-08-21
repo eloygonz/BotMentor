@@ -51,4 +51,6 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS Tutorias (id_profesor integer REFER
 
 cursor.execute("""CREATE TABLE IF NOT EXISTS Cursos (id_cursos integer not null unique, grado VARCHAR, curso INTEGER NOT NULL, grupo VARCHAR, PRIMARY KEY (id_cursos))""")
 
+cursor.execute("""CREATE TABLE IF NOT EXISTS Fichas (id_fichas integer not null unique, grado VARCHAR, curso VARCHAR , id_asignatura VARCHAR NOT NULL REFERENCES asignaturas(id_asignatura), asignatura VARCHAR, documento VARCHAR, PRIMARY KEY (id_fichas))""")
+
 #cursor.execute("""CREATE VIEW DATOS_CLASE AS SELECT CLASE.ID AS ID_CLASE, CLASE.IDA AS ID_A, CLASE.IDP AS ID_P, CLASE.CUATRI AS CUATRIMESTRE, CLASE.GRADO, CLASE.CURSO, CLASE.GRUPO, ASIGNATURA.NOMBRE AS NOMBRE_A, ASIGNATURA.SIGLAS, PROFESOR.NOMBRE AS NOMBRE_P FROM  CLASE, ASIGNATURA, PROFESOR WHERE CLASE.IDA = ASIGNATURA.ID AND CLASE.IDP = PROFESOR.ID """)

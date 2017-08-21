@@ -64,6 +64,68 @@ class DBHorarios:
         for tupla in cursor.fetchall():
             print (tupla)
 
+    def insertarFichasDocentes(self, tablas):
+
+        cursor = self.db.cursor();
+
+        reg = ()
+        grado = ''
+        curso = ''
+       
+        cont = 0;
+        for key, value in tablas.items():
+
+
+            if 'MÁSTER INGENIERÍA INFORMÁTICA (Máster)' == key:
+                grado = 'MII'
+            elif 'GRADO EN INGENIERÍA DE COMPUTADORES (Grados)' == key:
+                grado = 'GIC'
+            elif 'GRADO EN INGENIERÍA INFORMÁTICA (Grados)' == key:
+                grado = 'GII'
+            elif 'GRADO EN INGENIERÍA DEL SOFTWARE (Grados)' == key:
+                grado = 'GIS'
+            elif 'GRADO EN DESARROLLO DE VIDEOJUEGOS (Grados)' == key:
+                grado = 'GDV'
+            elif 'DOBLE GRADO DE MATEMÁTICAS E INFORMÁTICA (Grados)' == key:
+                grado = 'DGMI'
+
+            for k, v in value.items():
+
+                if 'PRIMER CURSO' == k:
+                    curso = '1'
+                elif 'SEGUNDO CURSO' == k:
+                    curso = '2'
+                elif 'TERCER CURSO' == k:
+                    curso = '3'
+                elif 'CUARTO CURSO' == k:
+                    curso = '4'
+                elif 'OPTATIVAS DE TERCER Y CUARTO CURSO' == k:
+                    curso = "3-4"
+
+                #req = (id_ficha, grado, curso, id_asignatura, asignatura, documento)
+                
+                for q in v:
+
+                    aux = q[0].split("-")
+                    id_asignatura = aux[0].strip()
+
+                    if len(aux) > 2:
+                        asignatura = aux[1]+"-"+aux[2]
+                    elif len(aux) == 2:
+                        asignatura = aux[1]
+                    
+                    documento = q[1]
+
+                    reg = (cont, grado, curso, id_asignatura, asignatura.strip(), documento)
+                    
+                    
+                    cursor.execute("INSERT INTO Fichas VALUES (?,?,?,?,?,?)", reg)
+
+                    cont = cont + 1
+
+                
+        self.db.commit()
+
     def insertarCursos(self, tablas):
 
         cursor = self.db.cursor();
@@ -109,6 +171,7 @@ class DBHorarios:
 
                 
         self.db.commit()
+
 
     def insertarAsignaturas(self, tablas):
 
@@ -166,7 +229,7 @@ class DBHorarios:
                     else:
 
                         aux = c[0].split(",")
-                        
+
                         reg = (cont, aux[1].strip(), aux[0].strip(), c[1].strip(), c[2].strip(), " ")
                     
                         n = self.insertarClasesBBDD(c[3], cont, n, cursor)

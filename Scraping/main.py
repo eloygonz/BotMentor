@@ -13,23 +13,24 @@ def main():
 	scrap = scraping.Scraping()
 
 	
-	#tabTutorias = scrap.scrapTutorias()
+	tabTutorias = scrap.scrapTutorias()
 	
-	#tabAsignaturas = scrap.scrapAsignaturas()
+	tabAsignaturas = scrap.scrapAsignaturas()
 
-	#dicCursos = scrap.scrapCursos()
+	dicCursos = scrap.scrapCursos()
 	
-	scrap.scrapInformacionDocente()
+	dicFichas=scrap.scrapInformacionDocente()
 	
 	
-	#d = BBDD.DBHorarios();
+	d = BBDD.DBHorarios();
 
-	#d.insertarScrapingBBDD(tabTutorias);
+	d.insertarScrapingBBDD(tabTutorias);
 
-	#d.insertarAsignaturas(tabAsignaturas);
+	d.insertarAsignaturas(tabAsignaturas);
 
-	#d.insertarCursos(dicCursos);
+	d.insertarCursos(dicCursos);
 	
+	d.insertarFichasDocentes(dicFichas)
 
 
 

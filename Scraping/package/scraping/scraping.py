@@ -335,15 +335,13 @@ class Scraping:
                 
    
             # Pasamos el contenido HTML de la web a un objeto BeautifulSoup()
-                
+              
             html = BeautifulSoup(req.text, "html.parser") 
 
             a = html.find_all('a') 
-            h3 = html.find_all('strong') 
-
-            
+           
             links = []
-
+            ficha = dict()
             for ar in a:
 
                 p = ar.find(text=True);
@@ -351,35 +349,18 @@ class Scraping:
                 if "Fichas docentes del curso 2016/2017" == p:
                     links.append(ar['href'])
                     
-              
-
             for l in links:
 
-                self.scrapFichasDocentes(l)
+                self.scrapFichasDocentes(l, ficha)
 
-            """
-            key = ''
-            for t, l in enumerate(li):
+            return(ficha)
 
-                p = l.find(text=True);
-                        
-                if ('GRADO' in p ) or ('INFORMÁTICA' in p): 
-
-                    key = p
-                    array = []
-                else:
-                    array.append(p);   
-                    cursos[key] = array;
-                    
-            
-            return cursos;                               
-            """
         else:
             print ("Status Code", statusCode)
 
 
 
-    def scrapFichasDocentes(self, url):
+    def scrapFichasDocentes(self, url, fichaALL):
 
         #url = "http://informatica.ucm.es/informatica/informacion-docente";
         # Realizamos la petición a la web
@@ -400,13 +381,14 @@ class Scraping:
             #print(tabla)
 
             key = ''
+            keyALL =''
             for t in td:
                 tex = t.find(text= True)
                 
-                if None != tex and 'GRADO' in tex:
-                    print (tex)
+                if (None != tex and 'GRADO' in tex) or (None != tex and 'MÁSTER' in tex):
+                    keyALL = tex
                             
-                if None != tex and 'CURSO' in tex:
+                elif None != tex and 'CURSO' in tex:
                     key = tex
                     array = []
                 else:
@@ -414,17 +396,14 @@ class Scraping:
                     a = t.find('a')
 
                     if None != a and 'Guias_Docentes' not in a['href']:
+                        p=a.find(text = True)
                         
-                        array.append(a['href'])
+                        objeto = p, a['href']
+                        array.append(objeto)
                         ficha[key] = array
-            
-            #print(ficha)
 
-
-
-            
-                    
-               
+            fichaALL[keyALL]=ficha
+                            
 
         else:
             print ("Status Code", statusCode)
