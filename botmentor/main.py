@@ -1,8 +1,6 @@
 # -*- coding: UTF-8 -*-
 import time
 from gui import *
-from CommandParser import *
-from Consultor import *
 from Commands import *
 from FactoriaCommand import FactoriaCommand
 from telepot.loop import MessageLoop
@@ -60,7 +58,8 @@ class BotMentorStarter(telepot.helper.ChatHandler):
             command = msg['text'].split()
             global comando
             comando = Command(command)
-            if parseCommand(self,comando):
+
+            if comando.parseCommand(self):
                 f = FactoriaCommand
                 com = f.creaComando(command)
                 if comando.com == '/start':
@@ -82,7 +81,6 @@ class BotMentorStarter(telepot.helper.ChatHandler):
                         com.ejecutar()
                 elif comando.com == 'Volver' or comando.com == '/volver':
                     self.sender.sendMessage('comando volver parseado bien!')
-
                     menu(self)
                 elif comando.com == 'Fichas docentes' or comando.com == '/fichas':
                     self.sender.sendMessage('comando fichas parseado bien!')
@@ -98,12 +96,13 @@ class BotMentorStarter(telepot.helper.ChatHandler):
                         com.ejecutar()
                 elif comando.com == '/ayuda':
                     self.sender.sendMessage('comando ayuda parseado bien!')
+
                 elif comando.com == 'Profesores' or comando.com == '/profesor':
                     self.sender.sendMessage('comando profesor parseado bien!')
                     if com.estaListo():
                         profesor = com.ejecutar()
-                        self.sender.sendMessage('El profesor que buscas es: ' + profesor.nombre + ':\n'
-                            + 'Despacho: ' + profesor.despacho + '\nCorreo: ' + profesor.correo + '\nTlf: '+ profesor.tlf)
+                        self.sender.sendMessage('El profesor que buscas es: ' + profesor.nombre + ':\nDespacho: '
+                        + profesor.despacho + '\nCorreo: ' + profesor.correo + '\nTlf: '+ profesor.tlf)
                 elif comando.com == 'Clases' or comando.com == '/clase':
                     self.sender.sendMessage('comando clase parseado bien!')
                     if com.estaListo():
@@ -159,8 +158,8 @@ class BotMentor(telepot.helper.ChatHandler):
             keyboard = InlineKeyboardMarkup(inline_keyboard=[
                 [InlineKeyboardButton(text='Horarios', callback_data='horarios'),
                  InlineKeyboardButton(text='Tutorias', callback_data='tutorias')],
-                [InlineKeyboardButton(text='Profesores', callback_data='profesores')
-                    , InlineKeyboardButton(text='Clases', callback_data='clases')],
+                [InlineKeyboardButton(text='Profesores', callback_data='profesores'),
+                 InlineKeyboardButton(text='Clases', callback_data='clases')],
                 [InlineKeyboardButton(text='Fichas docentes', callback_data='fichas')],
             ])
             sent = bot.sendMessage(from_id, "Seleccione la opci├│n deseada:", reply_markup=keyboard)

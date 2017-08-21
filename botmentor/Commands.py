@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod
-from Consultor import *
+from consultor import *
 
 
 class Command():
@@ -32,10 +32,60 @@ class Command():
             self.grupo = c[3]
             self.nombre = c[4]
 
+    @classmethod
+    def numCurso(self):
+        if self.grado == 'MII':
+            cursos = 2
+        elif self.grado == 'GDV':
+            cursos = 3
+        elif self.grado == 'OP':
+            cursos = 0
+        else:
+            cursos = 4
+        return cursos
 
     @classmethod
-    def estaListo(self):
+    def parseGrupo(self):
+        res = consultaGrupo(self.curso, self.grado, self.grupo)
+        if res:
+            return True
+        else:
+            return False
+
+    @classmethod
+    def existeAsignatura(self, nombre):
         return True
+
+    @classmethod
+    def existeProfesor(nombre, apellido):
+        return True
+
+    @classmethod
+    def parseCommand(self):
+        # type: (object, object) -> object
+        listaComandosCompletos = ['/horarios', '/fichas']
+        listaComandosSimples = ['ayuda', '/start']
+        listaComandosEspecificos = ['/horario', '/tutoria', '/clase']
+        listaGrados = ['GII', 'GIS', 'GIC', 'GDV', 'II', 'MII', 'DGMI']
+        if self.com in listaComandosCompletos:
+            if self.grado is not None and self.grado in listaGrados:
+                if self.curso is not None and self.numCurso(self, self.grado) >= self.curso and self.curso >= 0:
+                    if self.parseGrupo(self):
+                        return True
+        elif self.com in listaComandosSimples:
+            return True
+        elif self.com in listaComandosEspecificos:
+            if self.grado is not None and self.grado in listaGrados:
+                if self.curso is not None and self.numCurso(self) >= self.curso and self.curso >= 0:
+                    if self.parseGrupo(self):
+                        return self.existeAsignatura(self, self.nombre)
+        elif self.com == '/profesor' and self.nombre is not None and self.apellido is not None and self.apellido2 is not None:
+            return self.existeProfesor(self.nombre, self.apellido)
+        elif self.com == '/ficha' and self.nombre is not None:
+            return self.existeAsignatura(self, self.nombre)
+
+    @abstractmethod
+    def estaListo(self): raise NotImplementedError
 
     @abstractmethod
     def ejecutar(self): raise NotImplementedError
@@ -54,7 +104,11 @@ class CommandHorarios(Command):
             return consultaHorarios(self.nombre, self.grado, self.curso, self.grupo)
         elif self.nombre == None:  # Horario de un curso completo
            return consultaHorarios(self.grado, self.curso, self.grupo)
-
+    def estaListo(self):
+        if self.grado is not None and self.curso is not None and self.grupo is not None and self.nombre is not None:
+            return True
+        else:
+            return False
 
 class CommandTutoriaAsignatura(Command):
 
@@ -65,6 +119,11 @@ class CommandTutoriaAsignatura(Command):
 
         return consultaTutoriasAsignatura(self.nombre)
 
+    def estaListo(self):
+        if self.nombre is not None:
+            return True
+        else:
+            return False
 
 class CommandTutoriaProfesor(Command):
     apellido = None
@@ -79,10 +138,17 @@ class CommandTutoriaProfesor(Command):
         return consultaTutoriasProfesor(self.nombre, self.apellido, self.apellido2)
 
 
+    def estaListo(self):
+        if self.nombre is not None and self.apellido2 is not None and self.apellido is not None:
+            return True
+        else:
+            return False
+
+
 class CommandTutoriaClase(Command):
     cuatrimestre = None
 
-    def __init__(self, grado, curso, grupo, cuatrimestre, asignatura=None):
+    def __init__(self, grado, curso, grupo, cuatrimestre, asignatura):
         self.grado = grado
         self.curso = curso
         self.grupo = grupo
@@ -92,6 +158,11 @@ class CommandTutoriaClase(Command):
     def ejecutar(self):
         return consultaTutoriasClase(self.nombre, self.cuatrimestre, self.grado, self.curso, self.grupo)
 
+    def estaListo(self):
+        if self.grado is not None and self.curso is not None and self.grupo is not None and self.nombre is not None and self.cuatrimestre is not None:
+            return True
+        else:
+            return False
 
 class CommandProfesor(Command):
     apellido = None
@@ -105,6 +176,12 @@ class CommandProfesor(Command):
     def ejecutar(self):
         return consultaProfesor(self.nombre, self.apellido, self.apellido2)
 
+    def estaListo(self):
+        if self.nombre is not None and self.apellido is not None and self.apellido2 is not None:
+            return True
+        else:
+            return False
+
 
 class CommandFichas(Command):
 
@@ -115,6 +192,12 @@ class CommandFichas(Command):
     def ejecutar(self):
         return consultaFichas(self.grado, self.curso)
 
+    def estaListo(self):
+        if self.grado is not None and self.curso is not None:
+            return True
+        else:
+            return False
+
 
 class CommandFicha(Command):
     def __init__(self, nombre):
@@ -122,3 +205,51 @@ class CommandFicha(Command):
 
     def ejecutar(self):
         return consultaFicha(self.nombre)
+
+    def estaListo(self):
+        if self.nombre is not None:
+            return True
+        else:
+            return False
+
+class CommandStart(Command):
+    def __init__(self, nombre):
+        self.nombre = nombre
+
+    def ejecutar(self):
+        return consultaFicha(self.nombre)
+
+    def estaListo(self):
+        if self.nombre is not None:
+            return True
+        else:
+            return False
+
+
+class CommandVolver(Command):
+    def __init__(self, nombre):
+        self.com = nombre
+
+    def ejecutar(self):
+
+        return consultaFicha(self.nombre)
+
+    def estaListo(self):
+        if self.nombre is not None:
+            return True
+        else:
+            return False
+
+
+class CommandMenu(Command):
+    def __init__(self, nombre):
+        self.nombre = nombre
+
+    def ejecutar(self):
+        return consultaFicha(self.nombre)
+
+    def estaListo(self):
+        if self.nombre is not None:
+            return True
+        else:
+            return False

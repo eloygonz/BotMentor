@@ -54,4 +54,5 @@ def seleccionGrupo(self,grupo):
         [KeyboardButton(text='D'), KeyboardButton(text='E'), KeyboardButton(text='F')]]
     self.sender.sendMessage("Selecciona la titulación:", reply_markup=keyboard)
 
-
+def ayuda(self):
+    self.sende.sendMessage("Consulta horarios de un curso completo (Utiliza las siglas del grado/master por ejemplo: '/horarios IS 1 B' (consulta los horarios de todas las asignaturas de 1ºB del grado en Ingeniería de Software)")

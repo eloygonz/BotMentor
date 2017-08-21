@@ -1,6 +1,8 @@
 # coding=utf-8
-from Consultor import *
+from consultor import *
 from Commands import Command
+
+
 def numCurso(self, grado):
     if grado == 'MII':
         cursos = 2
