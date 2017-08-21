@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod
-from consultor import *
+from Consultor import *
 
 
 class Command():
@@ -9,11 +9,33 @@ class Command():
     curso = None
     grupo = None
     nombre = None
+    apellido = None
+    apellido2 = None
     _metaclass_ = ABCMeta
-    consultor = Consultor()
+
+    @classmethod
+    def __init__(self,c):
+        self.com = c[0]
+        if len(c) == 2:
+            self.nombre = c[1]
+        elif len(c) == 4 and (self.com == '/profesor' or self.com == 'tutoria'):
+            self.nombre = c[1]
+            self.apellido = c[2]
+            self.apellido2 = c[3]
+        elif len(c) == 4 and not(self.com == '/profesor' or self.com == 'tutoria'):
+            self.grado = c[1]
+            self.curso = c[2]
+            self.grupo = c[3]
+        elif len(c) == 5:
+            self.grado = c[1]
+            self.curso = c[2]
+            self.grupo = c[3]
+            self.nombre = c[4]
+
+
     @classmethod
     def estaListo(self):
-        return self.listo
+        return True
 
     @abstractmethod
     def ejecutar(self): raise NotImplementedError
@@ -29,9 +51,9 @@ class CommandHorarios(Command):
 
     def ejecutar(self):
         if self.nombre != None:  # Horario de una asignatura concreta
-            pass
+            return consultaHorarios(self.nombre, self.grado, self.curso, self.grupo)
         elif self.nombre == None:  # Horario de un curso completo
-           return self.consultor.consultaHorarios(self.grado, self.curso, self.grupo)
+           return consultaHorarios(self.grado, self.curso, self.grupo)
 
 
 class CommandTutoriaAsignatura(Command):
@@ -40,7 +62,8 @@ class CommandTutoriaAsignatura(Command):
         self.nombre = asignatura
 
     def ejecutar(self):
-        return self.consultor.consultaTutoriasAsignatura(self.nombre)
+
+        return consultaTutoriasAsignatura(self.nombre)
 
 
 class CommandTutoriaProfesor(Command):
@@ -53,7 +76,7 @@ class CommandTutoriaProfesor(Command):
         self.apellido2 = apellido2
 
     def ejecutar(self):
-        return self.consultor.consultaTutoriasProfesor(self.nombre, self.apellido, self.apellido2)
+        return consultaTutoriasProfesor(self.nombre, self.apellido, self.apellido2)
 
 
 class CommandTutoriaClase(Command):
@@ -67,7 +90,7 @@ class CommandTutoriaClase(Command):
         self.cuatrimestre = cuatrimestre
 
     def ejecutar(self):
-        return self.consultor.consultaTutoriasClase(self.nombre, self.cuatrimestre, self.grado, self.curso, self.grupo)
+        return consultaTutoriasClase(self.nombre, self.cuatrimestre, self.grado, self.curso, self.grupo)
 
 
 class CommandProfesor(Command):
@@ -80,7 +103,7 @@ class CommandProfesor(Command):
         self.apellido2 = apellido2
 
     def ejecutar(self):
-        return self.consultor.consultaProfesor(self.nombre, self.apellido2, self.apellido2)
+        return consultaProfesor(self.nombre, self.apellido, self.apellido2)
 
 
 class CommandFichas(Command):
@@ -90,7 +113,7 @@ class CommandFichas(Command):
         self.grado = grado
 
     def ejecutar(self):
-        return self.consultor.consultaFichas(self.grado, self.curso)
+        return consultaFichas(self.grado, self.curso)
 
 
 class CommandFicha(Command):
@@ -98,4 +121,4 @@ class CommandFicha(Command):
         self.nombre = nombre
 
     def ejecutar(self):
-        return self.consultor.consultaFicha(self.nombre)
+        return consultaFicha(self.nombre)

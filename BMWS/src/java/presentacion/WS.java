@@ -173,13 +173,19 @@ public class WS {
         try{
            //https://web.fdi.ucm.es/Docencia/Horarios.aspx?fdicurso=2016&CodCurso=48&grupo=E&tipo=0
            cn = ConexionBD.Enlace(cn);
-           s = cn.createStatement();       
-           String query  = "SELECT datos from horarios where idC in (Select idC form clases where curso = '" + curso + "'"
-                   + " and GRUPO =  '" + grupo + "' AND GRADO = '"+ grado + "'" + " AND asignatura = '" + asignatura +"');";
+           s = cn.createStatement();      
+           /**
+            * SELECT * from horarios where id_Aulas in 
+            * (Select id_aulas from aulas where id_clase in 
+            * (Select id_clase from clases where curso = '2ºA' and id_asignatura in 
+            * (select id_asignatura from asignaturas where GRADO = 'GIS' AND siglas = 'EDA')));
+            */
+           String query  = "SELECT * from horarios where id_Aulas in(Select id_aula from aulas where id_clase in (Select id_clase from clases where curso = '" + curso + "º"
+                   + grupo + "' id_asignatura in (select id_asignatura from asignaturas where GRADO = '"+ grado + "'" + " AND siglas = '" + asignatura +"')));";
            rs = s.executeQuery(query);
     
            while(rs.next()){
-               datos.add(rs.getString("datos"));
+               datos.add(rs.getString("hora"));
            }
         }catch (Exception e){
             e.printStackTrace();

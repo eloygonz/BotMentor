@@ -1,36 +1,6 @@
 # coding=utf-8
-from consultor import *
-""""
-def parseGrado(self, c):
-    if c.grado == 'MI' or c.grado == 'IS' or c.grado == 'IC' or c.grado == 'II' or c.grado == ':
-
-    elif al.grado == 'DV':
-        #cursos = [[KeyboardButton(text='1'),KeyboardButton(text='2'),KeyboardButton(text='3')]]
-    elif grado == 'OP':
-        #cursos = [[KeyboardButton(text='Generales'), KeyboardButton(text='Itinerario A Informática'), KeyboardButton(text='Itinerario B Informática')]]
-    else:
-        #cursos = [[KeyboardButton(text='1'),KeyboardButton(text='2'),KeyboardButton(text='3'),KeyboardButton(text='4')]]
-def parseCurso(self, al):
-    if grado == 'MI' and :
-        cursos = [[KeyboardButton(text='1'),KeyboardButton(text='2')]]
-    elif grado == 'DV':
-        cursos = [[KeyboardButton(text='1'),KeyboardButton(text='2'),KeyboardButton(text='3')]]
-    elif grado == 'OP':
-        cursos = [[KeyboardButton(text='Generales'), KeyboardButton(text='Itinerario A Informática'), KeyboardButton(text='Itinerario B Informática')]]
-    else:
-        cursos = [[KeyboardButton(text='1'),KeyboardButton(text='2'),KeyboardButton(text='3'),KeyboardButton(text='4')]]
-
-def parseGrupo(self,al):
-    if grado == 'MI':
-        cursos = [[KeyboardButton(text='1'),KeyboardButton(text='2')]]
-    elif grado == 'DV':
-        cursos = [[KeyboardButton(text='1'),KeyboardButton(text='2'),KeyboardButton(text='3')]]
-    elif grado == 'OP':
-        cursos = [[KeyboardButton(text='Generales'), KeyboardButton(text='Itinerario A Informática'), KeyboardButton(text='Itinerario B Informática')]]
-    else:
-        cursos = [[KeyboardButton(text='1'),KeyboardButton(text='2'),KeyboardButton(text='3'),KeyboardButton(text='4')]]
-"""
-
+from Consultor import *
+from Commands import Command
 def numCurso(self, grado):
     if grado == 'MII':
         cursos = 2
@@ -45,7 +15,7 @@ def numCurso(self, grado):
 
 
 def parseGrupo(self,command):
-    res = Consultor.consultaGrupo(command.curso, command.grado, command.grupo)
+    res = consultaGrupo(command.curso, command.grado, command.grupo)
     if res:
         return True
     else:
@@ -77,7 +47,7 @@ def parseCommand(self, command):
             if command.curso != None and numCurso(self, command.grado) >= command.curso and command.curso >= 0:
                 if parseGrupo(self, command):
                     return existeAsignatura(self, command.nombre)
-    elif command.com == '/profesor' and command.nombre != None and command.apellido != None:
+    elif command.com == '/profesor' and command.nombre != None and command.apellido != None and command.apellido2 != None:
         return existeProfesor(command.nombre, command.apellido)
     elif command.com == '/ficha' and  command.nombre != None:
         return existeAsignatura(self, command.nombre)

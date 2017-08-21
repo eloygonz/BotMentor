@@ -2,7 +2,9 @@
 import time
 from gui import *
 from CommandParser import *
-from consultor import prueba
+from Consultor import *
+from Commands import *
+from FactoriaCommand import FactoriaCommand
 from telepot.loop import MessageLoop
 from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton
 from telepot.delegate import (
@@ -44,37 +46,8 @@ class Alumno:
         self.curso = c
     def setGrupo (self,g):
         self.grupo = g
-class Comando:
-    com = None
-    grado= None
-    curso= None
-    grupo= None
-    nombre = None
-    apellido = None
-    def __init__(self, c):
-        if len(c) == 1:
-            self.com = c[0]
-        elif len(c) == 2:
-            self.com = c[0]
-            self.nombre = c[1]
-        elif len(c) == 3:
-            self.com = c[0]
-            self.nombre = c[1]
-            self.apellido = c[2]
-        elif len(c) == 4:
-            self.com = c[0]
-            self.grado = c[1]
-            self.curso = int(c[2])
-            self.grupo = c [3]
-        elif len(c) == 5:
-            self.com = c[0]
-            self.grado = c[1]
-            self.curso = int(c[2])
-            self.grupo = c [3]
-            self.nombre = c[4]
 
-al = Alumno
-comando = Comando
+comando = Command
 class BotMentorStarter(telepot.helper.ChatHandler):
     def __init__(self, *args, **kwargs):
         super(BotMentorStarter, self).__init__(*args, **kwargs)
@@ -86,8 +59,10 @@ class BotMentorStarter(telepot.helper.ChatHandler):
             content_type, chat_type, chat_id = telepot.glance(msg)
             command = msg['text'].split()
             global comando
-            comando = Comando(command)
+            comando = Command(command)
             if parseCommand(self,comando):
+                f = FactoriaCommand
+                com = f.creaComando(command)
                 if comando.com == '/start':
                     global mid
                     self.sender.sendMessage(
@@ -99,23 +74,40 @@ class BotMentorStarter(telepot.helper.ChatHandler):
                     menu(self)
                 elif comando.com == '/horario':
                     self.sender.sendMessage('comando horario parseado bien!')
+                    if com.estaListo():
+                        com.ejecutar()
                 elif comando.com == 'Horarios' or comando.com == '/horarios':
                     self.sender.sendMessage('comando horarios parseado bien!')
+                    if com.estaListo():
+                        com.ejecutar()
                 elif comando.com == 'Volver' or comando.com == '/volver':
                     self.sender.sendMessage('comando volver parseado bien!')
+
                     menu(self)
                 elif comando.com == 'Fichas docentes' or comando.com == '/fichas':
                     self.sender.sendMessage('comando fichas parseado bien!')
+                    if com.estaListo():
+                        com.ejecutar()
                 elif comando.com == '/ficha':
                     self.sender.sendMessage('comando ficha parseado bien!')
+                    if com.estaListo():
+                        com.ejecutar()
                 elif comando.com == '/tutoria':
                     self.sender.sendMessage('comando tutoria parseado bien!')
+                    if com.estaListo():
+                        com.ejecutar()
                 elif comando.com == '/ayuda':
                     self.sender.sendMessage('comando ayuda parseado bien!')
                 elif comando.com == 'Profesores' or comando.com == '/profesor':
                     self.sender.sendMessage('comando profesor parseado bien!')
+                    if com.estaListo():
+                        profesor = com.ejecutar()
+                        self.sender.sendMessage('El profesor que buscas es: ' + profesor.nombre + ':\n'
+                            + 'Despacho: ' + profesor.despacho + '\nCorreo: ' + profesor.correo + '\nTlf: '+ profesor.tlf)
                 elif comando.com == 'Clases' or comando.com == '/clase':
                     self.sender.sendMessage('comando clase parseado bien!')
+                    if com.estaListo():
+                        com.ejecutar()
                 elif comando.com == 'Fichas de curso completo' or comando.com == '/fcurso':
                     seleccionGrado(self)
                     global cursoRequest
