@@ -151,73 +151,143 @@ class DBHorarios:
         for t in tablas:
             for f in t:
                 for c in f:
-                    #req = ("id_profesor", "nombre","correo","telefono", "despacho")
+                    #req = ("id_profesor", "nombre", "apellidos", "correo","telefono", "despacho")
                     
                     if(len(c) == 6):
-                        reg = (cont, c[0], c[1], c[2], c[3])
+
+                        aux = c[0].split(",")
+
+                        reg = (cont, aux[1].strip(), aux[0].strip(), c[1].strip(), c[2].strip(), c[3].strip())
                         
                         n = self.insertarClasesBBDD(c[4], cont, n, cursor)
+
                         
                         self.insertarTutoriasBBDD(c[5], cont, cursor)
                     else:
-                        reg = (cont, c[0], c[1], c[2], " ")
 
+                        aux = c[0].split(",")
+                        
+                        reg = (cont, aux[1].strip(), aux[0].strip(), c[1].strip(), c[2].strip(), " ")
+                    
                         n = self.insertarClasesBBDD(c[3], cont, n, cursor)
-
+                        
                         self.insertarTutoriasBBDD(c[4], cont, cursor)
 
-                    
-                    cursor.execute("INSERT INTO profesores VALUES (?,?,?,?,?)", reg)
+                 
+                    cursor.execute("INSERT INTO profesores VALUES (?,?,?,?,?,?)", reg)
     
                     cont = cont + 1
 
         self.db.commit()            
 
     def insertarClasesBBDD(self, h, id_profesor, cont, cursor):
-
+        curso=" "
+        grupo=" "
+        grado=" "
         n = 0;
-        if len(h['1c']) > 1:
+        if len(h['1c']) > 0:
             cua1 = h['1c']
-        #    print (cua1)
+            
             for k, v in cua1.items():
-
+            
                 lista = k.split('(');
                 lista = lista[1].split(')')
                 lista = lista[0].split('-')
-                
-                #req = ("id_clase", id_profesor", id_asignatura "cuatrimestre", "curso")
 
-                reg = (cont, id_profesor,  lista[0], '1', lista[2])
+                id_asignatura = lista[0]
+
+                #req = ("id_clase", id_profesor", id_asignatura "cuatrimestre", "curso", "grupo", "aula", "horario")
+                aux = lista[2].split("º")
+                if len(aux) == 2:
+                    grado = lista[1]
+                    if 'opIT4' in aux:
+                        curso = '4'
+                        grupo = aux[1]
+                    elif 'opIT3' in aux:
+                        curso = '3'
+                        grupo = aux[1]
+                    else:
+                        curso= aux[0]
+                        grupo = aux[1]
+                elif len(aux) == 3:
+                    curso = '3-4'           
+                    grupo = aux[2]  
+                    grado = lista[1]  
                 
                 
-                cursor.execute("INSERT OR REPLACE INTO Clases VALUES (?,?,?,?,?)", reg)
-               
                 self.insertarAulasHorariosBBDD(v, cont, cursor)
 
-                cont = cont + 1
+                reg = (cont, id_profesor,  id_asignatura, '1', grado, curso, grupo)              
 
-        if len(h['2c']) > 1:
+                cursor.execute("INSERT INTO Clases VALUES (?,?,?,?,?,?,?)", reg)
+                
+                cont = cont + 1        
+                
+
+        if len(h['2c']) > 0:
             cua2 = h['2c']
-        #    print (cua1)
+        
             for k, v in cua2.items():
 
                 lista = k.split('(');
                 lista = lista[1].split(')')
                 lista = lista[0].split('-')
-
-                #req = ("id_clase", id_profesor", id_asignatura "cuatrimestre", "curso")
                 
+                id_asignatura = lista[0]
+                #req = ("id_clase", id_profesor", id_asignatura "cuatrimestre", "curso", "grupo", "aula", "horario") 
+
                 if(len(lista) == 3):
 
-                    reg = (cont, id_profesor, lista[0], '2', lista[2])
-                    
-                    cursor.execute("INSERT OR REPLACE INTO Clases VALUES (?,?,?,?,?)", reg)
-                    self.insertarAulasHorariosBBDD(v, cont, cursor)
+                    aux = lista[2].split("º")
+                    if len(aux) == 2:
+                        grado = lista[1]
+                        if 'opIT4' in aux:
+                            curso = '4'
+                            grupo = aux[1]
+                        elif 'opIT3' in aux:
+                            curso = '3'
+                            grupo = aux[1]
+                        elif 'opt5' in aux:
+                            curso = '4'
+                            grupo = aux[1]
+                        else:
+                            curso = aux[0]
+                            grupo = aux[1]
+                            
 
+                    elif len(aux) == 3:
+                        curso = '3-4'
+                        grupo = aux[2] 
+                        grado = lista[1]              
+                
+             
+                self.insertarAulasHorariosBBDD(v, cont, cursor)
+
+                reg = (cont, id_profesor,  id_asignatura, '2', grado, curso, grupo)
+                
+                cursor.execute("INSERT INTO Clases VALUES (?,?,?,?,?,?,?)", reg)
+    
                 cont = cont + 1
 
         return cont
+    
+    def insertarAulasHorariosBBDD(self, a, id_clase, cursor):
 
+        for k, v in a.items():
+
+            aula = k.split('-')
+            aula = aula[1].strip()
+            
+            #req = ("id_aulas", id_clase", "Aula_lab", hora)
+
+            for s in v:                
+            
+                reg = (self.c, id_clase, aula, s)    
+                cursor.execute("INSERT INTO Aulas_Horarios VALUES (?,?,?,?)", reg)
+
+                self.c = self.c + 1
+
+    """
     def insertarAulasHorariosBBDD(self, a, id_clase, cursor):
 
         idA = 0
@@ -243,7 +313,7 @@ class DBHorarios:
                 cursor.execute("INSERT INTO Horarios VALUES (?,?)", regH)
 
             self.c = self.c + 1
-
+    """
 
     def insertarTutoriasBBDD(self, t, id_profesor, cursor):
 

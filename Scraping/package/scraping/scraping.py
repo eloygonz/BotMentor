@@ -292,9 +292,6 @@ class Scraping:
    
             cursos = dict()
             # Pasamos el contenido HTML de la web a un objeto BeautifulSoup()
-                
-            #html = BeautifulSoup(req.text)
-               
 
             html = BeautifulSoup(req.text, "html.parser") 
 
@@ -303,15 +300,9 @@ class Scraping:
             # Array con las tablas. Cada tabla es de un  grado
             li = html.find_all('li') 
 
-          
-
             # Sacamos una matriz con las filas y columnas de las tablas y las metemos en un array de tablas
-           
-                    
+                   
             
-
-           
-                 #matriz.append(p);   
             key = ''
             for t, l in enumerate(li):
 
@@ -327,6 +318,113 @@ class Scraping:
                     
             
             return cursos;                               
+
+        else:
+            print ("Status Code", statusCode)
+
+
+    def scrapInformacionDocente(self):
+
+        url = "http://informatica.ucm.es/informatica/informacion-docente";
+        # Realizamos la petición a la web
+        req = requests.get(url)
+            
+        # Comprobamos que la petición nos devuelve un Status Code = 200
+        statusCode = req.status_code
+        if statusCode == 200:
+                
+   
+            # Pasamos el contenido HTML de la web a un objeto BeautifulSoup()
+                
+            html = BeautifulSoup(req.text, "html.parser") 
+
+            a = html.find_all('a') 
+            h3 = html.find_all('strong') 
+
+            
+            links = []
+
+            for ar in a:
+
+                p = ar.find(text=True);
+               
+                if "Fichas docentes del curso 2016/2017" == p:
+                    links.append(ar['href'])
+                    
+              
+
+            for l in links:
+
+                self.scrapFichasDocentes(l)
+
+            """
+            key = ''
+            for t, l in enumerate(li):
+
+                p = l.find(text=True);
+                        
+                if ('GRADO' in p ) or ('INFORMÁTICA' in p): 
+
+                    key = p
+                    array = []
+                else:
+                    array.append(p);   
+                    cursos[key] = array;
+                    
+            
+            return cursos;                               
+            """
+        else:
+            print ("Status Code", statusCode)
+
+
+
+    def scrapFichasDocentes(self, url):
+
+        #url = "http://informatica.ucm.es/informatica/informacion-docente";
+        # Realizamos la petición a la web
+        req = requests.get(url)
+            
+        # Comprobamos que la petición nos devuelve un Status Code = 200
+        statusCode = req.status_code
+        if statusCode == 200:
+                
+            ficha = dict()
+            # Pasamos el contenido HTML de la web a un objeto BeautifulSoup()
+                
+            html = BeautifulSoup(req.text, "html.parser") 
+
+            td = html.find_all('td')
+
+            ax = html.find_all('a')
+            #print(tabla)
+
+            key = ''
+            for t in td:
+                tex = t.find(text= True)
+                
+                if None != tex and 'GRADO' in tex:
+                    print (tex)
+                            
+                if None != tex and 'CURSO' in tex:
+                    key = tex
+                    array = []
+                else:
+
+                    a = t.find('a')
+
+                    if None != a and 'Guias_Docentes' not in a['href']:
+                        
+                        array.append(a['href'])
+                        ficha[key] = array
+            
+            #print(ficha)
+
+
+
+            
+                    
+               
 
         else:
             print ("Status Code", statusCode)
