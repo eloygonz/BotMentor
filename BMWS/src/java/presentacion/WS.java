@@ -13,6 +13,7 @@ import integracion.ConexionBD;
 import integracion.DAOAsignatura;
 import integracion.DAOClase;
 import integracion.DAOCurso;
+import integracion.DAOFichaDocente;
 import integracion.DAOHorarios;
 import integracion.DAOProfesor;
 import integracion.DAOTutoria;
@@ -295,48 +296,30 @@ public class WS {
      */
     @WebMethod(operationName = "consultarFichaDocente")
     public String consultarFichaDocenteA(@WebParam(name = "asignatura") String asignatura) {
-         String url = "no existe";
-        try{
-           //https://web.fdi.ucm.es/Docencia/Horarios.aspx?fdicurso=2016&CodCurso=48&grupo=E&tipo=0
-           cn = ConexionBD.Enlace(cn);
-           s = cn.createStatement();      
-           
-           String query  = "SELECT URL from fichas where asignatura = '" + asignatura + "';";
-           rs = s.executeQuery(query);
-    
-           while(rs.next()){
-          url = rs.getString("url");
-           }
-        }catch(Exception e){
-                   
-        }
-        return url;
+        TFichaDocente tF = new TFichaDocente();
+        tF.setAsignatura(asignatura);
+        FactoriaDAO fD = FactoriaDAO.getInstance();
+        DAOFichaDocente dF = fD.getDAOFichas(tF);
+        return dF.getFichaDocente();
+        
     }
         @WebMethod(operationName = "consultarFichasDocentes")
-    public ArrayList consultarFichaDocente(@WebParam(name = "curso") String curso, @WebParam(name= "grado") String grado) {
-         ArrayList<TFichaDocente> url = new ArrayList();
-        try{
-           //https://web.fdi.ucm.es/Docencia/Horarios.aspx?fdicurso=2016&CodCurso=48&grupo=E&tipo=0
-           cn = ConexionBD.Enlace(cn);
-           s = cn.createStatement();      
-           
-           String query  = "SELECT * from fichas where curso = '" + curso + "' AND GRADO = '" + grado + "';";
-           rs = s.executeQuery(query);
-    
-           while(rs.next()){
-            url.add (new TFichaDocente(rs.getString("url"), rs.getString("grado"), rs.getString("asignatura"),rs.getString("curso")));
-           }
-        }catch(Exception e){
-                   
-        }
-        return url;
+    public ArrayList<TFichaDocente> consultarFichasDocentes(@WebParam(name = "grado") String grado, @WebParam(name= "curso") String curso) {
+      ArrayList<TFichaDocente> fichas = new ArrayList<TFichaDocente>();
+        TFichaDocente tF = new TFichaDocente();
+        tF.setCurso(curso);
+        tF.setGrado(grado);
+        FactoriaDAO fD = FactoriaDAO.getInstance();
+        DAOFichaDocente dF = fD.getDAOFichas(tF);
+        fichas = dF.getInfoFichas();
+        return fichas;
     }
 
     /**
      * Web service operation
      */
     @WebMethod(operationName = "consultarGrupos")
-    public ArrayList<TCurso> consultarGrupos(@WebParam(name = "curso") String curso, @WebParam(name = "grado") String grado) {
+    public ArrayList<TCurso> consultarGrupos(@WebParam(name = "grado") String grado, @WebParam(name = "curso") String curso) {
         ArrayList<TCurso> grupos = new ArrayList<TCurso>();
         TCurso tC = new TCurso();
         tC.setCurso(curso);

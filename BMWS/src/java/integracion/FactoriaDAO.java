@@ -43,4 +43,8 @@ public class FactoriaDAO {
    public DAOCurso getDAOCursos(TCurso t){
        return new DAOCurso(t);
    }
+
+   public DAOFichaDocente getDAOFichas(TFichaDocente tF) {
+        return new DAOFichaDocente(tF);
+   }
 }

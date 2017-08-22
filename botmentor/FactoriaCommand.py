@@ -12,7 +12,7 @@ class FactoriaCommand:
         elif c[0] == '/ficha':
             if len(c) >= 2: comando = CommandFicha(c[1])
         elif c[0] == '/fichas':
-            if len(c) >= 4: comando = CommandFichas(c[1],c[2],c[3])
+            if len(c) >= 4: comando = CommandFichas(c[1],c[2])
         elif c[0] == '/profesor':
             if len(c) >= 3: comando = CommandProfesor(c[1], c[2], c[3])
         elif c[0] == '/clase':

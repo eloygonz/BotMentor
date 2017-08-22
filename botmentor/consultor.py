@@ -16,7 +16,7 @@ def consultarGrupos(grado, curso):
 
 def consultaGrupo(grado, curso, grupo):
     respuesta = client.service.consultarGrupo(grado, curso, grupo)
-    print respuesta
+    return respuesta
 
 
 def consultaHorarios(asignatura, grado, curso, grupo):
@@ -36,14 +36,14 @@ def consultaProfesor( nombre, apellido, apellido2):
     return respuesta
 
 
-def consultaFicha( nombre):
+def consultaFicha(nombre):
     respuesta = client.service.consultarFichaDocente(nombre)
-    print respuesta
+    return respuesta
 
 
-def consultaFichas( grado,curso):
+def consultaFichas(grado,curso):
     respuesta = client.service.consultarFichasDocentes(grado, curso)
-    print respuesta
+    return respuesta
 
 
 def consultaAsignatura(nombre):

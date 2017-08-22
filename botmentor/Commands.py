@@ -46,8 +46,8 @@ class Command():
 
     @classmethod
     def parseGrupo(self):
-        res = consultaGrupo(self.curso, self.grado, self.grupo)
-        if res:
+        res = consultaGrupo(self.grado, self.curso, self.grupo)
+        if res.id != -1:
             return True
         else:
             return False
@@ -69,20 +69,20 @@ class Command():
         listaGrados = ['GII', 'GIS', 'GIC', 'GDV', 'II', 'MII', 'DGMI']
         if self.com in listaComandosCompletos:
             if self.grado is not None and self.grado in listaGrados:
-                if self.curso is not None and self.numCurso(self, self.grado) >= self.curso and self.curso >= 0:
-                    if self.parseGrupo(self):
+                if self.curso is not None and self.numCurso() >= int(self.curso) and int(self.curso) >= 0:
+                    if self.parseGrupo():
                         return True
         elif self.com in listaComandosSimples:
             return True
         elif self.com in listaComandosEspecificos:
             if self.grado is not None and self.grado in listaGrados:
-                if self.curso is not None and self.numCurso(self) >= self.curso and self.curso >= 0:
+                if self.curso is not None and self.numCurso() >= self.curso and self.curso >= 0:
                     if self.parseGrupo(self):
                         return self.existeAsignatura(self, self.nombre)
         elif self.com == '/profesor' and self.nombre is not None and self.apellido is not None and self.apellido2 is not None:
             return self.existeProfesor(self.nombre, self.apellido)
         elif self.com == '/ficha' and self.nombre is not None:
-            return self.existeAsignatura(self, self.nombre)
+            return self.existeAsignatura(self.nombre)
 
     @abstractmethod
     def estaListo(self): raise NotImplementedError

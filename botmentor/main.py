@@ -59,7 +59,7 @@ class BotMentorStarter(telepot.helper.ChatHandler):
             global comando
             comando = Command(command)
 
-            if comando.parseCommand(self):
+            if comando.parseCommand():
                 f = FactoriaCommand
                 com = f.creaComando(command)
                 if comando.com == '/start':
@@ -83,13 +83,14 @@ class BotMentorStarter(telepot.helper.ChatHandler):
                     self.sender.sendMessage('comando volver parseado bien!')
                     menu(self)
                 elif comando.com == 'Fichas docentes' or comando.com == '/fichas':
-                    self.sender.sendMessage('comando fichas parseado bien!')
                     if com.estaListo():
-                        com.ejecutar()
+                        fichas = com.ejecutar()
+                        for f in fichas:
+                            self.sender.sendMessage('Ficha de asignatura: ' + f.asignatura + ' : ' + f.url)
                 elif comando.com == '/ficha':
-                    self.sender.sendMessage('comando ficha parseado bien!')
                     if com.estaListo():
-                        com.ejecutar()
+                        f = com.ejecutar()
+                        self.sender.sendMessage('Ficha de asignatura: ' + com.nombre + ' : ' + f)
                 elif comando.com == '/tutoria':
                     self.sender.sendMessage('comando tutoria parseado bien!')
                     if com.estaListo():
