@@ -31,8 +31,9 @@ public class FactoriaDAO {
    public DAOFichaDocente getDAOFichaDocente(TFichaDocente t){
        return new DAOFichaDocente(t);
    }
-   public DAOHorarios getDAOHorarios(){
-       return new DAOHorarios();
+   public DAOHorarios getDAOHorarios(TClase t, String asignatura){
+       if(asignatura.equals("")) return new DAOHorarios(t);
+       else return new DAOHorarios(t, asignatura);
    }
    public DAOProfesor getDAOProfesor(TProfesor t){
        return new DAOProfesor(t);

@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import negocio.TClase;
+import negocio.THorariosC;
 
 /**
  *
@@ -28,22 +29,34 @@ public class DAOHorarios {
         tC = t;
         this.asignatura = asignatura;
     }
-    public static ArrayList<THorarios> getHorarios(String curso, String grupo, String grado){
-        ArrayList<THorarios> horarios = new ArrayList<THorarios>();
+    public DAOHorarios(TClase t) {
+        tC = t;
+    }
+    /**
+     * Método que devuelve todas los horarios de las asignaturas de un curso completo
+     * @return 
+     */
+    public  ArrayList<THorariosC> getHorarios(){
+        ArrayList<THorariosC> horarios = new ArrayList<THorariosC>();
         try{
-            
-           //https://web.fdi.ucm.es/Docencia/Horarios.aspx?fdicurso=2016&CodCurso=48&grupo=E&tipo=0
            cn = ConexionBD.Enlace(cn);
            s = cn.createStatement();       
-           String query  = "Select codigo form clases where curso = '" + curso + "'" + " and GRUPO =  '" + grupo + "' AND GRADO = '"+ grado +"';";
+            int idA;
+           String query  = "Select codigo form clases where curso = '" + tC.getCurso() + "' and GRUPO =  '" + tC.getGrupo() + "' AND GRADO = '"+ tC.getGrado() +"';";
            rs = s.executeQuery(query);
            while(rs.next()){
-               THorarios tH = new THorarios();
-               tH.setIdA(rs.getInt("codigo"));
-               query  = "SELECT hora from horarios where ida = " + tH.getIdA() + ";";
+               THorariosC tH = new THorariosC();
+               TClase t = new TClase();
+               t.setId(rs.getInt("id_clase"));
+               t.setIdA(rs.getInt("id_asignatura"));
+               query  = "SELECT hora from horarios where id_clase = " + t.getId() + ";";
                ResultSet rs2 = s.executeQuery(query);
-               tH.setHora(rs2.getString("hora"));
-               query  = "SELECT nombre from asignaturas where id = " + tH.getIdA() + ";";
+               while(rs2.next()){
+                   tH.getHora().add(rs2.getString("hora"));
+                   tH.setAula_lab(rs2.getString("aula_lab"));
+               }
+
+               query  = "SELECT nombre from asignaturas where id = " + t.getIdA() + ";";
                rs2 = s.executeQuery(query);
                tH.setAsignatura(rs2.getString("nombre"));
                horarios.add(tH);
@@ -56,26 +69,30 @@ public class DAOHorarios {
         
     }
 
-    DAOHorarios(THorarios t){
-    
-    }
-
-    public THorarios getInfo(TClase transfer) {
-         THorarios tH = new THorarios();
+    /**
+     * Método que devuelve todos los horarios de una asignatura concreta.
+     * @return 
+     */
+    public THorariosC getInfo() {
+         THorariosC tH = new THorariosC();
         try{
-           //https://web.fdi.ucm.es/Docencia/Horarios.aspx?fdicurso=2016&CodCurso=48&grupo=E&tipo=0
+
            cn = ConexionBD.Enlace(cn);
            s = cn.createStatement();       
-           String query  = "Select codigo form clases where curso = '" + transfer.getCurso() + "'" + " and GRUPO =  '" + transfer.getGrupo()
-                   + "' AND GRADO = '"+ transfer.getGrado() +"';";
+           String query  = "Select id_asignatura form clases where curso = '" + tC.getCurso() + "'" + " and GRUPO =  '" + tC.getGrupo()
+                   + "' AND GRADO = '"+ tC.getGrado() +"';";
            rs = s.executeQuery(query);
            while(rs.next()){
               
-               tH.setIdA(rs.getInt("codigo"));
-               query  = "SELECT hora from horarios where ida = " + tH.getIdA() + ";";
+               tC.setIdA(rs.getInt("id_asignatura"));
+               query  = "SELECT hora from horarios where ida = " + tC.getIdA() + ";";
                ResultSet rs2 = s.executeQuery(query);
-               tH.setHora(rs2.getString("hora"));
-               query  = "SELECT nombre from asignaturas where id = " + tH.getIdA() + ";";
+               while (rs.next()){
+                   tH.getHora().add(rs2.getString("hora"));
+                   tH.setAula_lab(rs2.getString("aula_lab"));
+               }
+               
+               query  = "SELECT nombre from asignaturas where id_asignatura = " + tC.getIdA() + ";";
                rs2 = s.executeQuery(query);
                tH.setAsignatura(rs2.getString("nombre"));
            }    
@@ -84,11 +101,13 @@ public class DAOHorarios {
         }
         return tH; 
     }
-    
+    /**
+     * Método que devuelve todos los horarios de un curso completo, (Alternativo a GetHorarios)
+     * @return 
+     */
     public ArrayList<THorarios> getHorario(){
         ArrayList<THorarios> datos = new ArrayList<THorarios>();
         try{
-           //https://web.fdi.ucm.es/Docencia/Horarios.aspx?fdicurso=2016&CodCurso=48&grupo=E&tipo=0
            cn = ConexionBD.Enlace(cn);
            s = cn.createStatement();      
            /**
@@ -97,13 +116,13 @@ public class DAOHorarios {
             * (Select id_clase from clases where curso = '2ºA' and id_asignatura in 
             * (select id_asignatura from asignaturas where GRADO = 'GIS' AND siglas = 'EDA')));
             */
-           String Query = "SELECT * FROM horarios WHERE id_profesor in (SELECT ID_PROFESOR FROM CLASES WHERE CURSO = " +  tC.getCurso() + " and Grupo ="
+           String query = "SELECT * FROM horarios WHERE id_profesor in (SELECT ID_PROFESOR FROM CLASES WHERE CURSO = " +  tC.getCurso() + " and Grupo ="
                    + " '" + tC.getGrupo() + "' and GRADO = '" + tC.getGrado() +"' and id_asignatura in (SELECT id_asignatura where GRADO =' "+
                    tC.getGrado() + "' and siglas = '" + asignatura + "':";
              rs = s.executeQuery(query);
     
            while(rs.next()){
-               datos.add(new THorarios(rs.getString("hora")));
+               datos.add(new THorarios(rs.getInt("ID_AULA"), rs.getString("hora"),rs.getInt("ID_CLASE"),rs.getString("AULA_LAB")));
            }
         }catch (Exception e){
             e.printStackTrace();

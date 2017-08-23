@@ -27,6 +27,7 @@ import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import java.sql.*;
 import negocio.TCurso;
+import negocio.THorariosC;
 
 /**
  *
@@ -152,49 +153,25 @@ public class WS {
         return tutorias;
     }
         @WebMethod(operationName = "consultarHorariosC")
-    public ArrayList consultarHorariosC(@WebParam(name = "curso") String curso, @WebParam(name = "grupo") String grupo, @WebParam(name = "grado") String grado) {
-        ArrayList<THorarios> horarios = new ArrayList<THorarios>();
+    public ArrayList<THorariosC> consultarHorariosC(@WebParam(name = "curso") String curso, @WebParam(name = "grupo") String grupo, @WebParam(name = "grado") String grado) {
         TClase tC = new TClase();
         tC.setCurso(curso);
         tC.setGrado(grado);
         tC.setGrupo(grupo);
         FactoriaDAO fD = FactoriaDAO.getInstance();
-        DAOClase dC = fD.getDAOClase(tC);
-        ArrayList <TClase> clases = dC.getClases();
-        DAOHorarios dH = fD.getDAOHorarios();
-        for (int i = 0; i < clases.size();i++){
-           horarios.add(dH.getInfo(clases.get(i)));
-        }
-        return horarios;
+        DAOHorarios dH = fD.getDAOHorarios(tC,"");
+        return dH.getHorarios();
     }
     
     @WebMethod(operationName = "consultarHorariosA")
- public ArrayList consultarHorariosA(@WebParam(name = "asignatura") String asignatura,@WebParam(name = "curso") String curso, @WebParam(name = "grupo") String grupo, @WebParam(name = "grado") String grado) {
-     ArrayList<String> datos = new ArrayList<String>();
-        try{
-           //https://web.fdi.ucm.es/Docencia/Horarios.aspx?fdicurso=2016&CodCurso=48&grupo=E&tipo=0
-           cn = ConexionBD.Enlace(cn);
-           s = cn.createStatement();      
-           /**
-            * SELECT * from horarios where id_Aulas in 
-            * (Select id_aulas from aulas where id_clase in 
-            * (Select id_clase from clases where curso = '2ºA' and id_asignatura in 
-            * (select id_asignatura from asignaturas where GRADO = 'GIS' AND siglas = 'EDA')));
-            */
-           String Query = "SELECT * FROM horarios WHERE id_profesor in (SELECT ID_PROFESOR FROM CLASES WHERE CURSO = " +  curso + " and Grupo ="
-                   + " '" + grupo + "' and GRADO = '" + grado +"' and id_asignatura in (SELECT id_asignatura where GRADO =' "+ grado + 
-                   "' and siglas = '" + asignatura + "':";
-           String query  = "SELECT * from horarios where id_Aulas in(Select id_aula from aulas where id_clase in (Select id_clase from clases where curso = '" + curso + "º"
-                   + grupo + "' id_asignatura in (select id_asignatura from asignaturas where GRADO = '"+ grado + "'" + " AND siglas = '" + asignatura +"')));";
-           rs = s.executeQuery(query);
-    
-           while(rs.next()){
-               datos.add(rs.getString("hora"));
-           }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return datos;
+ public THorariosC consultarHorariosA(@WebParam(name = "asignatura") String asignatura,@WebParam(name = "curso") String curso, @WebParam(name = "grupo") String grupo, @WebParam(name = "grado") String grado) {
+        TClase tC = new TClase();
+        tC.setCurso(curso);
+        tC.setGrado(grado);
+        tC.setGrupo(grupo);
+        FactoriaDAO fD = FactoriaDAO.getInstance();
+        DAOHorarios dH = fD.getDAOHorarios(tC,asignatura);
+        return dH.getInfo();
     }
     
     /**

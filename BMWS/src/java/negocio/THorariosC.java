@@ -6,6 +6,7 @@
 package negocio;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -19,26 +20,37 @@ import javax.persistence.Table;
     CREATE TABLE Aulas_Horarios (id_aulas integer, id_clase integer REFERENCES clases(id_clase), 
 *   aula_lab VARCHAR, hora VARCHAR, PRIMARY KEY (id_aulas))
  */
-@Entity
-@Table (name="Horarios")
-public class THorarios implements Serializable{
-    @Id
-    @OneToOne 
-    @PrimaryKeyJoinColumn(referencedColumnName = "ASIGNATURAS_codigo")
+public class THorariosC implements Serializable{
+
     private int id_aula;
-    @Column(name="hora")
-    private String hora;
     private int id_clase;
     private String aula_lab;
+    private String asignatura;
+    private ArrayList<String> hora;
+
+    public int getId_clase() {
+        return id_clase;
+    }
+
+    public void setId_clase(int id_clase) {
+        this.id_clase = id_clase;
+    }
+
+    public String getAsignatura() {
+        return asignatura;
+    }
+
+    public void setAsignatura(String asignatura) {
+        this.asignatura = asignatura;
+    }
     
-    public THorarios(int id_aula, String hora, int id_clase, String aula_lab) {
+    public THorariosC(int id_aula, int id_clase, String aula_lab) {
         this.id_aula = id_aula;
-        this.hora = hora;
         this.id_clase = id_clase;
         this.aula_lab = aula_lab;
     }
 
-    public THorarios() {
+    public THorariosC() {
     }
 
     public int getId_asignatura() {
@@ -49,11 +61,11 @@ public class THorarios implements Serializable{
         this.id_aula = id_asignatura;
     }
 
-    public String getHora() {
+    public ArrayList<String> getHora() {
         return hora;
     }
 
-    public void setHora(String hora) {
+    public void setHora(ArrayList<String> hora) {
         this.hora = hora;
     }
 
