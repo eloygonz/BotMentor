@@ -51,6 +51,30 @@ private TAsignatura transfer;
         return transfer;
     }
     
+        public TAsignatura getAsignatura(){
+        
+
+        try{
+
+           cn = ConexionBD.Enlace(cn);
+           s = cn.createStatement();       
+           String query;
+           query = "SELECT * FROM asignatura WHERE id_asignatura = " + transfer.getId()+ ";" ;
+           rs = s.executeQuery(query);
+    
+           while(rs.next()){
+               transfer.setId(rs.getInt("id"));
+               transfer.setGrado(rs.getString("GRADO"));
+               transfer.setNombre(rs.getString("nombre"));
+               transfer.setSigla(rs.getString("siglas"));
+           }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        
+        return transfer;
+    }
+    
     public ArrayList<TAsignatura> getAsignaturas(){
         ArrayList<TAsignatura> datos = new ArrayList<TAsignatura>();
         try{ 
@@ -69,6 +93,28 @@ private TAsignatura transfer;
         }
         
         return datos;
+        
+    }
+    
+        public TAsignatura getCodAsignatura(){
+ 
+        try{ 
+
+           cn = ConexionBD.Enlace(cn);
+           s = cn.createStatement();       
+           String query  = "SELECT * from asignatura where (nombre =  '" + transfer.getNombre() + "' OR SIGLAS = '" +transfer.getSigla() + "')"
+                   + "and GRADO = '" + transfer.getGrado() + "';";
+           rs = s.executeQuery(query);
+    
+           while(rs.next()){
+            transfer = new TAsignatura(rs.getInt("ID"),rs.getString("nombre"),rs.getString("siglas"),rs.getString("grado"));
+           } 
+            
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        
+        return transfer;
         
     }
     

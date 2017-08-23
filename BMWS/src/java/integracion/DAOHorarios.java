@@ -20,8 +20,13 @@ public class DAOHorarios {
     static Connection cn;
     static Statement s;
     static  ResultSet rs;
+    private THorarios transfer;
+    private TClase tC;
+    private String asignatura;
     
-    public DAOHorarios() {
+    public DAOHorarios(TClase t, String asignatura) {
+        tC = t;
+        this.asignatura = asignatura;
     }
     public static ArrayList<THorarios> getHorarios(String curso, String grupo, String grado){
         ArrayList<THorarios> horarios = new ArrayList<THorarios>();
@@ -78,6 +83,33 @@ public class DAOHorarios {
             e.printStackTrace();
         }
         return tH; 
+    }
+    
+    public ArrayList<THorarios> getHorario(){
+        ArrayList<THorarios> datos = new ArrayList<THorarios>();
+        try{
+           //https://web.fdi.ucm.es/Docencia/Horarios.aspx?fdicurso=2016&CodCurso=48&grupo=E&tipo=0
+           cn = ConexionBD.Enlace(cn);
+           s = cn.createStatement();      
+           /**
+            * SELECT * from horarios where id_Aulas in 
+            * (Select id_aulas from aulas where id_clase in 
+            * (Select id_clase from clases where curso = '2ºA' and id_asignatura in 
+            * (select id_asignatura from asignaturas where GRADO = 'GIS' AND siglas = 'EDA')));
+            */
+           String Query = "SELECT * FROM horarios WHERE id_profesor in (SELECT ID_PROFESOR FROM CLASES WHERE CURSO = " +  tC.getCurso() + " and Grupo ="
+                   + " '" + tC.getGrupo() + "' and GRADO = '" + tC.getGrado() +"' and id_asignatura in (SELECT id_asignatura where GRADO =' "+
+                   tC.getGrado() + "' and siglas = '" + asignatura + "':";
+             rs = s.executeQuery(query);
+    
+           while(rs.next()){
+               datos.add(new THorarios(rs.getString("hora")));
+           }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return datos;
+        
     }
     
 }

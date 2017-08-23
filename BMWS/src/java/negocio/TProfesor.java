@@ -18,14 +18,16 @@ import javax.persistence.Table;
 @Table(name="Profesor")
 public class TProfesor {
 
-    public TProfesor(String nombre, String despacho, String tlf, String correo) {
+    public TProfesor(String nombre, String apellidos, String despacho, String tlf, String correo) {
         this.nombre = nombre;
         this.despacho = despacho;
         this.tlf = tlf;
         this.correo = correo;
+        this.apellidos = apellidos;
     }
     public TProfesor() {
         this.nombre = "";
+        this.apellidos = "";
         this.despacho = "";
         this.tlf = "";
         this.correo = "";
@@ -34,13 +36,15 @@ public class TProfesor {
    
     public TProfesor(int id) {
         this.nombre = "";
+        this.apellidos = "";
         this.despacho = "";
         this.tlf = "";
         this.correo = "";
         this.id = id;
     }
-    public TProfesor(String nombre) {
+    public TProfesor(String nombre, String apellidos) {
         this.nombre = nombre;
+        this.apellidos = apellidos;
         this.despacho = "";
         this.tlf = "";
         this.correo = "";
@@ -48,6 +52,8 @@ public class TProfesor {
     }
     @Column (name="nombre")
     private String nombre;
+    @Column (name="apellidos")
+    private String apellidos;
     @Column (name="despacho")
     private String despacho;
     @Column (name ="tlf")
@@ -96,5 +102,12 @@ public class TProfesor {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getApellidos() {
+        return apellidos;
+    }
+    public void setApellidos(String apellidos) {
+        this.apellidos = apellidos;
     }
 }

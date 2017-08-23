@@ -34,7 +34,7 @@ private TClase transfer;
         cn = ConexionBD.Enlace(cn);
         s = cn.createStatement();       
         String query;
-        query = "SELECT IDC,IDP FROM CLASES WHERE codigo = '" + transfer.getIdA() + "' and curso =  '"
+        query = "SELECT IDC,IDP FROM CLASES WHERE id_asignatura = '" + transfer.getIdA() + "' and curso =  '"
                    + transfer.getCurso() + "' AND GRUPO = '"+ transfer.getGrupo() + "'" + " AND grado = '"+ transfer.getGrado()
                 + "'" + " AND cuatrimestre = '"+ transfer.getCuatrimestre() + "'" ;
         rs = s.executeQuery(query);
@@ -81,7 +81,7 @@ private TClase transfer;
         
         
     }
-     public ArrayList<TClase> getClasesP(String profesor){
+     public ArrayList<TClase> getClasesP(int profesor){
         ArrayList<TClase> lista = new ArrayList<TClase>();
         try{
             cn = ConexionBD.Enlace(cn);

@@ -47,11 +47,11 @@ public class DAOProfesor {
     }
         return transfer;
     }
-        public TProfesor getInfo(String nombre) {
+        public TProfesor getInfo() {
         try{
         cn = ConexionBD.Enlace(cn);
         s = cn.createStatement();       
-        String query  = "SELECT nombre from profesores where nombre = '" + nombre + "';";
+        String query  = "SELECT * from profesores where nombre = '" + transfer.getNombre() + "' and apellidos = '" + transfer.getApellidos()+ "';";
         rs = s.executeQuery(query);
     
         while(rs.next()){

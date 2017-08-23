@@ -16,9 +16,9 @@ import javax.persistence.Table;
 /**
  *
  * @author Eloyo
- *
- * CREATE TABLE horarios (idA integer REFERENCES aulas_clases(idA),
- * hora VARCHAR<)
+
+ CREATE TABLE horarios (id_asignatura integer REFERENCES aulas_clases(id_asignatura),
+ hora VARCHAR<)
  */
 @Entity
 @Table (name="Horarios")
@@ -26,33 +26,10 @@ public class THorarios implements Serializable{
     @Id
     @OneToOne 
     @PrimaryKeyJoinColumn(referencedColumnName = "ASIGNATURAS_codigo")
-    private int idA;
+    private int id_asignatura;
     @Column(name="hora")
     private String hora;
-    private String asignatura;
+    private int id_clase;
+    private String aula_lab;
 
-    public String getAsignatura() {
-        return asignatura;
-    }
-
-    public void setAsignatura(String asignatura) {
-        this.asignatura = asignatura;
-    }
-
-    public int getIdA() {
-        return idA;
-    }
-
-    public void setIdA(int idA) {
-        this.idA = idA;
-    }
-
-    public String getHora() {
-        return hora;
-    }
-
-    public void setHora(String hora) {
-        this.hora = hora;
-    }
-    
 }

@@ -121,14 +121,14 @@ public class WS {
         return tutorias;
     }
         @WebMethod(operationName = "consultarTutoriasP")
-    public ArrayList consultarTutoriasP(@WebParam(name = "profesor") TProfesor profesor) {
+    public ArrayList<TTutoriaC> consultarTutoriasP(@WebParam(name = "nombre") String nombre, @WebParam(name = "apellidos") String apellidos) {
         ArrayList<TClase> clases = new ArrayList<TClase>();
         ArrayList<TAsignatura> asignaturas = new ArrayList<TAsignatura>();
         ArrayList<TTutoriaC> tutorias = new ArrayList<TTutoriaC>();
         TAsignatura tA;
         TTutoria tT;
         TClase tC;
-        TProfesor tP;
+        TProfesor tP = new TProfesor(nombre, apellidos);
         DAOAsignatura dA;
         DAOClase dC;
         DAOTutoria dT;
@@ -137,10 +137,10 @@ public class WS {
         necesaria para recuperar los datos solicitados. Esto se hace en cadena hasta
         recuperar todos los datos.
         */
-        dP = new DAOProfesor();
-        tP = dP.getInfo(profesor.getNombre());
+        dP = new DAOProfesor(tP);
+        tP = dP.getInfo();
         dC = new DAOClase();
-        clases = dC.getClasesP(tP.getNombre());
+        clases = dC.getClasesP(tP.getId());
         for (int i = 0; i < clases.size(); i++){
             tC = clases.get(i);
             tA = new TAsignatura(clases.get(i).getId());
@@ -181,6 +181,9 @@ public class WS {
             * (Select id_clase from clases where curso = '2ºA' and id_asignatura in 
             * (select id_asignatura from asignaturas where GRADO = 'GIS' AND siglas = 'EDA')));
             */
+           String Query = "SELECT * FROM horarios WHERE id_profesor in (SELECT ID_PROFESOR FROM CLASES WHERE CURSO = " +  curso + " and Grupo ="
+                   + " '" + grupo + "' and GRADO = '" + grado +"' and id_asignatura in (SELECT id_asignatura where GRADO =' "+ grado + 
+                   "' and siglas = '" + asignatura + "':";
            String query  = "SELECT * from horarios where id_Aulas in(Select id_aula from aulas where id_clase in (Select id_clase from clases where curso = '" + curso + "º"
                    + grupo + "' id_asignatura in (select id_asignatura from asignaturas where GRADO = '"+ grado + "'" + " AND siglas = '" + asignatura +"')));";
            rs = s.executeQuery(query);
@@ -198,97 +201,37 @@ public class WS {
      * Web service operation
      */
     @WebMethod(operationName = "consultarClase")
-    public TClase consultarClase(@WebParam(name = "codigo") String curso, @WebParam(name = "asignatura") String asignatura, @WebParam(name = "grupo") String grupo, @WebParam(name = "cuatrimestre") String cuatrimestre, @WebParam(name = "grado") String grado) {
-        TAsignatura a = null;
-        TClase c = null;
-        try{
-           //https://web.fdi.ucm.es/Docencia/Horarios.aspx?fdicurso=2016&CodCurso=48&grupo=E&tipo=0
-           cn = ConexionBD.Enlace(cn);
-           s = cn.createStatement();      
-           
-           String query  = "SELECT * from asignaturas where SIGLAS = '" + asignatura + "';";
-           rs = s.executeQuery(query);
-    
-           while(rs.next()){
-            String nombre = (rs.getString("NOMBRE"));
-            String id = (rs.getString("ID")); // String id = (rs.getString("CODIGO"));
-            String sigla = (rs.getString("SIGLAS"));
-            a = new TAsignatura(Integer.parseInt(id),nombre,sigla,grado);
-           }
-           
-           if(a!= null){
-                query  = "SELECT * from clases where CURSO = '" + curso + "º" + grupo + "' AND GRADO = '"+ grado 
-                        + "'" + " AND CODIGO = " + String.valueOf(a.getId()) + ";";
+    public TClase consultarClase(@WebParam(name = "curso") String curso, @WebParam(name = "asignatura") String asignatura,
+            @WebParam(name = "grupo") String grupo, @WebParam(name = "cuatrimestre") String cuatrimestre, @WebParam(name = "grado") String grado) {
+        TAsignatura a = new TAsignatura(0,"",asignatura,grado);
+        FactoriaDAO fD = FactoriaDAO.getInstance();
+        DAOAsignatura dA = fD.getDAOAsignatura(a);
+        a = dA.getCodAsignatura();
+        TClase c = new TClase(a.getId(), a.getGrado());
+        c.setCuatrimestre(cuatrimestre);
+        c.setCurso(curso);
+        c.setGrupo(grupo);
+        DAOClase dC = fD.getDAOClase(c);
+        return dC.getInfoClase();
 
-                rs = s.executeQuery(query);
-                String datos;
-                c = new TClase();
-                while(rs.next()){
-                    String id = (rs.getString("IDC"));
-                    String idP = (rs.getString("IDP"));
-                    c.setId(Integer.parseInt(id));
-                    c.setIdP(Integer.parseInt(idP));
-                    c.setGrupo(grupo);
-                    c.setCurso(curso);
-                    c.setGrado(grado);
-                    c.setIdA(a.getId());
-                }
-           } else { 
-               
-               return null;
-           }
-            
-            
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return c;
     }
     /**
      * Web service operation
      */
     @WebMethod(operationName = "consultarAsignatura")
-    public TAsignatura consultarAsignatura(@WebParam(name = "codigo") String codigo) {
-        TAsignatura a = null;
-        try{
-           //https://web.fdi.ucm.es/Docencia/Horarios.aspx?fdicurso=2016&CodCurso=48&grupo=E&tipo=0
-           cn = ConexionBD.Enlace(cn);
-           s = cn.createStatement();      
-           
-           String query  = "SELECT * from asignaturas where codigo = '" + codigo + "';";
-           rs = s.executeQuery(query);
-    
-           while(rs.next()){
-            String nombre = (rs.getString("NOMBRE"));
-            String id = (rs.getString("ID")); // String id = (rs.getString("CODIGO"));
-            String sigla = (rs.getString("SIGLAS"));
-            String grado = (rs.getString("GRADO"));
-            a = new TAsignatura(Integer.parseInt(id),nombre,sigla,grado);
-           }
-        }catch(Exception e){
-                   
-        }
-        return a;
+    public TAsignatura consultarAsignatura(@WebParam(name = "codigo") int codigo) {
+        TAsignatura a = new TAsignatura(codigo);
+        FactoriaDAO fD = FactoriaDAO.getInstance();
+        DAOAsignatura dao = fD.getDAOAsignatura(a);
+        return dao.getAsignatura();
     }
     
      @WebMethod(operationName = "consultarProfesor")
-    public TProfesor consultarProfesor(@WebParam(name = "nombre") String nombre) {
-        TProfesor p = null;
-        try{
-           //https://web.fdi.ucm.es/Docencia/Horarios.aspx?fdicurso=2016&CodCurso=48&grupo=E&tipo=0
-           cn = ConexionBD.Enlace(cn);
-           s = cn.createStatement();      
-           
-           String query  = "SELECT * from profesores where nombre = '" + nombre + "';";
-           rs = s.executeQuery(query);
-    
-           while(rs.next()){
-           p = new TProfesor(rs.getString("NOMBRE"),rs.getString("despacho"),rs.getString("telefono"),rs.getString("correo"));
-           }
-        }catch(Exception e){
-                   
-        }
-        return p;
+    public TProfesor consultarProfesor(@WebParam(name = "nombre") String nombre, @WebParam(name = "apellidos") String apellidos) {
+        TProfesor p = new TProfesor(nombre, apellidos);
+        FactoriaDAO fD = FactoriaDAO.getInstance();
+        DAOProfesor dao = fD.getDAOProfesor(p);
+        return dao.getInfo();
     }
 
     /**
