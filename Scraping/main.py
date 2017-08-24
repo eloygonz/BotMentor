@@ -32,7 +32,7 @@ def main():
 	
 	d.insertarFichasDocentes(dicFichas)
 
-
+	#d.getInfoClase()
 
 
 if __name__ == "__main__":

@@ -15,6 +15,17 @@ class DBHorarios:
         self.db = dbapi.connect("db.dat")
        
 
+    def getInfoClase(self):
+
+        cursor = self.db.cursor();
+        
+        #req = ("id_clase", id_profesor", id_asignatura "cuatrimestre", "curso", "grupo")
+        
+        #cursor.execute("""select * from horarios where curso = 'GIS2' """)  
+        cursor.execute("""select * from Clases WHERE id_asignatura = '803322' and cuatrimestre = 2 and grado= 'GS' and curso = '1' and grupo = 'D' """)  
+        
+        for tupla in cursor.fetchall():
+            print (tupla)  
 
     #Metodo que hace scraping a las tablas horarios
     def selectAsignaturas(self):
@@ -87,7 +98,7 @@ class DBHorarios:
             elif 'GRADO EN DESARROLLO DE VIDEOJUEGOS (Grados)' == key:
                 grado = 'GDV'
             elif 'DOBLE GRADO DE MATEMÁTICAS E INFORMÁTICA (Grados)' == key:
-                grado = 'DGMI'
+                grado = 'DG'
 
             for k, v in value.items():
 
@@ -151,7 +162,7 @@ class DBHorarios:
             elif 'GRADO EN DESARROLLO DE VIDEOJUEGOS' == key:
                 keyX = 'GDV'
             elif 'DOBLE GRADO DE MATEMÁTICAS E INFORMÁTICA' == key:
-                keyX = 'DGMI'
+                keyX = 'DG'
 
             for v  in value:
                 #req = (id_curso, grado, curso, grupo)
@@ -259,7 +270,7 @@ class DBHorarios:
 
                 id_asignatura = lista[0]
 
-                #req = ("id_clase", id_profesor", id_asignatura "cuatrimestre", "curso", "grupo", "aula", "horario")
+                #req = ("id_clase", id_profesor", id_asignatura "cuatrimestre", "grado", "curso", "grupo")
                 aux = lista[2].split("º")
                 if len(aux) == 2:
                     grado = lista[1]
@@ -279,8 +290,21 @@ class DBHorarios:
                 
                 
                 self.insertarAulasHorariosBBDD(v, cont, cursor)
+                gradoX=grado
+                
+                if 'GC' == grado:
+                    gradoX = 'GIC'
+                elif 'GI' == grado:
+                    gradoX = 'GII'
+                elif 'GS' == grado:
+                    gradoX = 'GIS'
+                elif 'GV' == grado:
+                    gradoX = 'GDV'
+                elif 'DG' == grado:
+                    gradoX = 'DG'
 
-                reg = (cont, id_profesor,  id_asignatura, '1', grado, curso, grupo)              
+
+                reg = (cont, id_profesor,  id_asignatura, '1', gradoX, curso, grupo)              
 
                 cursor.execute("INSERT INTO Clases VALUES (?,?,?,?,?,?,?)", reg)
                 
@@ -326,7 +350,20 @@ class DBHorarios:
              
                 self.insertarAulasHorariosBBDD(v, cont, cursor)
 
-                reg = (cont, id_profesor,  id_asignatura, '2', grado, curso, grupo)
+                gradoX=grado
+                
+                if 'GC' == grado:
+                    gradoX = 'GIC'
+                elif 'GI' == grado:
+                    gradoX = 'GII'
+                elif 'GS' == grado:
+                    gradoX = 'GIS'
+                elif 'GV' == grado:
+                    gradoX = 'GDV'
+                elif 'DG' == grado:
+                    gradoX = 'DG'
+
+                reg = (cont, id_profesor,  id_asignatura, '2', gradoX, curso, grupo)
                 
                 cursor.execute("INSERT INTO Clases VALUES (?,?,?,?,?,?,?)", reg)
     
@@ -341,7 +378,7 @@ class DBHorarios:
             aula = k.split('-')
             aula = aula[1].strip()
             
-            #req = ("id_aulas", id_clase", "Aula_lab", hora)
+            #req = ("id_aulas", id_clase", "aula_lab", hora)
 
             for s in v:                
             
