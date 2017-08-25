@@ -153,7 +153,7 @@ public class WS {
         return tutorias;
     }
         @WebMethod(operationName = "consultarHorariosC")
-    public ArrayList<THorariosC> consultarHorariosC(@WebParam(name = "curso") String curso, @WebParam(name = "grupo") String grupo, @WebParam(name = "grado") String grado) {
+    public ArrayList<THorariosC> consultarHorariosC(@WebParam(name = "grado") String grado, @WebParam(name = "curso") String curso, @WebParam(name = "grupo") String grupo) {
         TClase tC = new TClase();
         tC.setCurso(curso);
         tC.setGrado(grado);
@@ -164,7 +164,7 @@ public class WS {
     }
     
     @WebMethod(operationName = "consultarHorariosA")
- public THorariosC consultarHorariosA(@WebParam(name = "asignatura") String asignatura,@WebParam(name = "curso") String curso, @WebParam(name = "grupo") String grupo, @WebParam(name = "grado") String grado) {
+ public THorariosC consultarHorariosA(@WebParam(name = "asignatura") String asignatura, @WebParam(name = "grado") String grado, @WebParam(name = "curso") String curso, @WebParam(name = "grupo") String grupo) {
         TClase tC = new TClase();
         tC.setCurso(curso);
         tC.setGrado(grado);

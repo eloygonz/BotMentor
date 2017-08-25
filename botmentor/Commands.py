@@ -97,13 +97,25 @@ class CommandHorarios(Command):
         self.grado = grado
         self.curso = curso
         self.grupo = grupo
+
+    def ejecutar(self):
+        return consultaHorarios(self.grado, self.curso, self.grupo)
+    def estaListo(self):
+        if self.grado is not None and self.curso is not None and self.grupo is not None:
+            return True
+        else:
+            return False
+class CommandHorario(Command):
+
+    def __init__(self, grado, curso, grupo, asignatura=None):
+        self.grado = grado
+        self.curso = curso
+        self.grupo = grupo
         self.nombre = asignatura
 
     def ejecutar(self):
-        if self.nombre != None:  # Horario de una asignatura concreta
-            return consultaHorarios(self.nombre, self.grado, self.curso, self.grupo)
-        elif self.nombre == None:  # Horario de un curso completo
-           return consultaHorarios(self.grado, self.curso, self.grupo)
+ # Horario de una asignatura concreta
+        return consultaHorarios(self.nombre, self.grado, self.curso, self.grupo)
     def estaListo(self):
         if self.grado is not None and self.curso is not None and self.grupo is not None and self.nombre is not None:
             return True

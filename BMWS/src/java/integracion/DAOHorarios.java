@@ -42,7 +42,7 @@ public class DAOHorarios {
            cn = ConexionBD.Enlace(cn);
            s = cn.createStatement();       
             int idA;
-           String query  = "Select codigo form clases where curso = '" + tC.getCurso() + "' and GRUPO =  '" + tC.getGrupo() + "' AND GRADO = '"+ tC.getGrado() +"';";
+           String query  = "Select id_asignatura, id_clase from clases where curso = " + tC.getCurso() + " and GRUPO =  '" + tC.getGrupo() + "' AND GRADO = '"+ tC.getGrado() +"';";
            rs = s.executeQuery(query);
            while(rs.next()){
                THorariosC tH = new THorariosC();
