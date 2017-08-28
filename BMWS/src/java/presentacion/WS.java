@@ -196,11 +196,11 @@ public class WS {
      * Web service operation
      */
     @WebMethod(operationName = "consultarAsignatura")
-    public TAsignatura consultarAsignatura(@WebParam(name = "codigo") int codigo) {
-        TAsignatura a = new TAsignatura(codigo);
+    public TAsignatura consultarAsignatura(@WebParam(name = "nombre") String nombre) {
+        TAsignatura a = new TAsignatura(nombre);
         FactoriaDAO fD = FactoriaDAO.getInstance();
         DAOAsignatura dao = fD.getDAOAsignatura(a);
-        return dao.getAsignatura();
+        return dao.getInfoAsignatura();
     }
     
      @WebMethod(operationName = "consultarProfesor")

@@ -24,9 +24,8 @@ public class THorariosC implements Serializable{
 
     private int id_aula;
     private int id_clase;
-    private String aula_lab;
     private String asignatura;
-    private ArrayList<String> hora;
+    private ArrayList<AulaHora> hora;
 
     public int getId_clase() {
         return id_clase;
@@ -44,13 +43,14 @@ public class THorariosC implements Serializable{
         this.asignatura = asignatura;
     }
     
-    public THorariosC(int id_aula, int id_clase, String aula_lab) {
+    public THorariosC(int id_aula, int id_clase) {
         this.id_aula = id_aula;
         this.id_clase = id_clase;
-        this.aula_lab = aula_lab;
+        this.hora = new ArrayList<AulaHora>();
     }
 
     public THorariosC() {
+        this.hora = new ArrayList<AulaHora>();
     }
 
     public int getId_asignatura() {
@@ -61,11 +61,11 @@ public class THorariosC implements Serializable{
         this.id_aula = id_asignatura;
     }
 
-    public ArrayList<String> getHora() {
+    public ArrayList<AulaHora> getHora() {
         return hora;
     }
 
-    public void setHora(ArrayList<String> hora) {
+    public void setHora(ArrayList<AulaHora> hora) {
         this.hora = hora;
     }
 
@@ -76,12 +76,37 @@ public class THorariosC implements Serializable{
     public void setId_aula(int id_aula) {
         this.id_aula = id_aula;
     }
+    public void addHorario (String hora, String aula_lab){
+        this.hora.add(new AulaHora(aula_lab, hora));
+        
+    }
+}
 
-    public String getAula_lab() {
-        return aula_lab;
+ class AulaHora {
+   private String aula;
+   private String hora;
+
+    public AulaHora(String aula, String hora) {
+        this.aula = aula;
+        this.hora = hora;
     }
 
-    public void setAula_lab(String aula_lab) {
-        this.aula_lab = aula_lab;
+   
+    public String getAula() {
+        return aula;
     }
+
+    public void setAula(String aula) {
+        this.aula = aula;
+    }
+
+    public String getHora() {
+        return hora;
+    }
+
+    public void setHora(String hora) {
+        this.hora = hora;
+    }
+   
+   
 }

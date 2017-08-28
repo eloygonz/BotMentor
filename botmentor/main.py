@@ -73,14 +73,24 @@ class BotMentorStarter(telepot.helper.ChatHandler):
                 menu(self)
             elif comando.com == '/horario':
                 if com.estaListo():
-                    com.ejecutar()
+                    horario = com.ejecutar()
+                    mensaje = 'Horario:\n'
+                    self.sender.sendMessage(mensaje)
+                    mensaje = com.nombre + '\n'
+                    for h in horario.hora:
+                        mensaje = mensaje + h.hora + ' en ' + h.aula + '\n'
+                    self.sender.sendMessage(mensaje)
+
             elif comando.com == 'Horarios' or comando.com == '/horarios':
                 if com.estaListo():
-                   horarios = com.ejecutar()
-                   self.sender.sendMessage('Horarios:\n')
-                   for h in horarios:
-                       self.sender.sendMessage(h.hora + '\n')
-
+                    horarios = com.ejecutar()
+                    mensaje = 'Horarios:\n'
+                    self.sender.sendMessage(mensaje)
+                    for h in horarios:
+                        mensaje = h.asignatura+ '\n'
+                        for h2 in h.hora:
+                            mensaje = mensaje + h2.hora + ' en ' + h2.aula + '\n'
+                        self.sender.sendMessage(mensaje)
             elif comando.com == 'Volver' or comando.com == '/volver':
                 menu(self)
             elif comando.com == 'Fichas docentes' or comando.com == '/fichas':

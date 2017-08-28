@@ -19,7 +19,7 @@ def consultaGrupo(grado, curso, grupo):
     return respuesta
 
 
-def consultaHorarios(asignatura, grado, curso, grupo):
+def consultaHorario(asignatura, grado, curso, grupo):
     respuesta = client.service.consultarHorariosA(asignatura, grado, curso, grupo)
     return respuesta
 
@@ -48,21 +48,21 @@ def consultaFichas(grado,curso):
 
 def consultaAsignatura(nombre):
     respuesta = client.service.consultarAsignatura(nombre)
-    print respuesta
+    return respuesta
 
 
 def consultaTutoriasAsignatura(nombre):
     respuesta = client.service.consultarTutoriasA(nombre)
-    print respuesta
+    return respuesta
 
 
 def consultaTutoriasProfesor(nombre, apellido, apellido2):
     respuesta = client.service.consultarTutoriasP(apellido + " " + apellido2 + ", " + nombre)
-    print respuesta
+    return respuesta
 
 
 def consultaTutoriasClase(asignatura, cuatrimestre, grado, curso, grupo):
     respuesta = client.service.consultarTutoriasC(asignatura, cuatrimestre, grado, curso, grupo)
-    print respuesta
+    return respuesta
 
 

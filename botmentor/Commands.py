@@ -54,8 +54,11 @@ class Command():
 
     @classmethod
     def existeAsignatura(self, nombre):
-        return True
-
+        res = consultaAsignatura(nombre)
+        if res.id > 0:
+            return True
+        else:
+            return False
     @classmethod
     def existeProfesor(nombre, apellido):
         return True
@@ -70,15 +73,13 @@ class Command():
         if self.com in listaComandosCompletos:
             if self.grado is not None and self.grado in listaGrados:
                 if self.curso is not None and self.numCurso() >= int(self.curso) and int(self.curso) >= 0:
-                    if self.parseGrupo():
-                        return True
+                    return self.parseGrupo
         elif self.com in listaComandosSimples:
             return True
         elif self.com in listaComandosEspecificos:
             if self.grado is not None and self.grado in listaGrados:
-                if self.curso is not None and self.numCurso() >= self.curso and self.curso >= 0:
-                    if self.parseGrupo(self):
-                        return self.existeAsignatura(self, self.nombre)
+                if self.curso is not None and self.numCurso() >= int(self.curso) and int(self.curso) >= 0:
+                    return self.parseGrupo() and self.existeAsignatura(self.nombre)
         elif self.com == '/profesor' and self.nombre is not None and self.apellido is not None and self.apellido2 is not None:
             return self.existeProfesor(self.nombre, self.apellido)
         elif self.com == '/ficha' and self.nombre is not None:
@@ -107,7 +108,7 @@ class CommandHorarios(Command):
             return False
 class CommandHorario(Command):
 
-    def __init__(self, grado, curso, grupo, asignatura=None):
+    def __init__(self, grado, curso, grupo, asignatura):
         self.grado = grado
         self.curso = curso
         self.grupo = grupo
@@ -115,7 +116,7 @@ class CommandHorario(Command):
 
     def ejecutar(self):
  # Horario de una asignatura concreta
-        return consultaHorarios(self.nombre, self.grado, self.curso, self.grupo)
+        return consultaHorario(self.nombre, self.grado, self.curso, self.grupo)
     def estaListo(self):
         if self.grado is not None and self.curso is not None and self.grupo is not None and self.nombre is not None:
             return True

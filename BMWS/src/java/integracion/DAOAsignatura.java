@@ -36,11 +36,11 @@ private TAsignatura transfer;
            cn = ConexionBD.Enlace(cn);
            s = cn.createStatement();       
            String query;
-           query = "SELECT * FROM asignatura WHERE nombre = '" + transfer.getNombre() + "' OR sigla = '" + transfer.getSigla() + "';" ;
+           query = "SELECT * FROM asignaturas WHERE nombre = '" + transfer.getNombre() + "' OR siglas = '" + transfer.getSigla() + "';" ;
            rs = s.executeQuery(query);
     
            while(rs.next()){
-               transfer.setId(rs.getInt("id"));
+               transfer.setId(rs.getInt("id_asignatura"));
                transfer.setNombre(rs.getString("nombre"));
                transfer.setSigla(rs.getString("siglas"));
            }
@@ -63,7 +63,7 @@ private TAsignatura transfer;
            rs = s.executeQuery(query);
     
            while(rs.next()){
-               transfer.setId(rs.getInt("id"));
+               transfer.setId(rs.getInt("id_asignatura"));
                transfer.setGrado(rs.getString("GRADO"));
                transfer.setNombre(rs.getString("nombre"));
                transfer.setSigla(rs.getString("siglas"));
@@ -81,11 +81,11 @@ private TAsignatura transfer;
 
            cn = ConexionBD.Enlace(cn);
            s = cn.createStatement();       
-           String query  = "SELECT * from asignatura where nombre =  '" + transfer.getNombre() + "' OR SIGLAS = '" +transfer.getSigla() + "';";
+           String query  = "SELECT * from asignaturas where nombre =  '" + transfer.getNombre() + "' OR SIGLAS = '" +transfer.getSigla() + "';";
            rs = s.executeQuery(query);
     
            while(rs.next()){
-            datos.add(new TAsignatura(rs.getInt("ID"),rs.getString("nombre"),rs.getString("siglas"),rs.getString("grado")));
+            datos.add(new TAsignatura(rs.getInt("ID_asignatura"),rs.getString("nombre"),rs.getString("siglas"),rs.getString("grado")));
            } 
             
         }catch (Exception e){
@@ -102,12 +102,12 @@ private TAsignatura transfer;
 
            cn = ConexionBD.Enlace(cn);
            s = cn.createStatement();       
-           String query  = "SELECT * from asignatura where (nombre =  '" + transfer.getNombre() + "' OR SIGLAS = '" +transfer.getSigla() + "')"
+           String query  = "SELECT * from asignaturas where (nombre =  '" + transfer.getNombre() + "' OR SIGLAS = '" +transfer.getSigla() + "')"
                    + "and GRADO = '" + transfer.getGrado() + "';";
            rs = s.executeQuery(query);
     
            while(rs.next()){
-            transfer = new TAsignatura(rs.getInt("ID"),rs.getString("nombre"),rs.getString("siglas"),rs.getString("grado"));
+            transfer = new TAsignatura(rs.getInt("ID_asignatura"),rs.getString("nombre"),rs.getString("siglas"),rs.getString("grado"));
            } 
             
         }catch (Exception e){

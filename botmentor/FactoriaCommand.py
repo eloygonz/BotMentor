@@ -8,7 +8,7 @@ class FactoriaCommand:
         if c[0] == '/horarios':
             if len(c) >= 4: comando = CommandHorarios(c[1], c[2], c[3])
         elif c[0] == '/horario':
-            if len(c) >= 5: comando = CommandHorarios(c[1], c[2], c[3], c[4])
+            if len(c) >= 5: comando = CommandHorario(c[1], c[2], c[3], c[4])
         elif c[0] == '/ficha':
             if len(c) >= 2: comando = CommandFicha(c[1])
         elif c[0] == '/fichas':

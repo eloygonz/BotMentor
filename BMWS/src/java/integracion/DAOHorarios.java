@@ -40,8 +40,9 @@ public class DAOHorarios {
         ArrayList<THorariosC> horarios = new ArrayList<THorariosC>();
         try{
            cn = ConexionBD.Enlace(cn);
-           s = cn.createStatement();       
-            int idA;
+           s = cn.createStatement(); 
+           Statement s2 = cn.createStatement();
+           int idA;
            String query  = "Select id_asignatura, id_clase from clases where curso = " + tC.getCurso() + " and GRUPO =  '" + tC.getGrupo() + "' AND GRADO = '"+ tC.getGrado() +"';";
            rs = s.executeQuery(query);
            while(rs.next()){
@@ -49,15 +50,14 @@ public class DAOHorarios {
                TClase t = new TClase();
                t.setId(rs.getInt("id_clase"));
                t.setIdA(rs.getInt("id_asignatura"));
-               query  = "SELECT hora from horarios where id_clase = " + t.getId() + ";";
-               ResultSet rs2 = s.executeQuery(query);
-               while(rs2.next()){
-                   tH.getHora().add(rs2.getString("hora"));
-                   tH.setAula_lab(rs2.getString("aula_lab"));
+               String query2  = "SELECT hora, aula_lab from aulas_horarios where id_clase = " + t.getId() + ";";
+               ResultSet rs2 = s2.executeQuery(query2);
+               while(rs2.next()){                 
+                   tH.addHorario(rs2.getString("hora"), rs2.getString("aula_lab"));
                }
 
-               query  = "SELECT nombre from asignaturas where id = " + t.getIdA() + ";";
-               rs2 = s.executeQuery(query);
+               String query3  = "SELECT nombre from asignaturas where id_asignatura = " + t.getIdA() + ";";
+               rs2 = s2.executeQuery(query3);
                tH.setAsignatura(rs2.getString("nombre"));
                horarios.add(tH);
            }    
@@ -76,24 +76,28 @@ public class DAOHorarios {
     public THorariosC getInfo() {
          THorariosC tH = new THorariosC();
         try{
-
            cn = ConexionBD.Enlace(cn);
-           s = cn.createStatement();       
-           String query  = "Select id_asignatura form clases where curso = '" + tC.getCurso() + "'" + " and GRUPO =  '" + tC.getGrupo()
-                   + "' AND GRADO = '"+ tC.getGrado() +"';";
+           s = cn.createStatement();  
+            
+           String query  = "SELECT id_asignatura from asignaturas where grado = '" + tC.getGrado() + "' and siglas = '" + asignatura + "';";
+           rs = s.executeQuery(query);
+           tH.setId_asignatura(rs.getInt("id_asignatura"));
+ 
+      
+           query  = "Select id_clase from clases where curso = " + tC.getCurso() + " and GRUPO =  '" + tC.getGrupo()
+                   + "' AND GRADO = '"+ tC.getGrado() +"' and id_asignatura = " + tH.getId_asignatura() + ";";
            rs = s.executeQuery(query);
            while(rs.next()){
-              
-               tC.setIdA(rs.getInt("id_asignatura"));
-               query  = "SELECT hora from horarios where ida = " + tC.getIdA() + ";";
-               ResultSet rs2 = s.executeQuery(query);
-               while (rs.next()){
-                   tH.getHora().add(rs2.getString("hora"));
-                   tH.setAula_lab(rs2.getString("aula_lab"));
+               tH.setId_clase(rs.getInt("id_clase"));
+               query  = "SELECT hora, aula_lab from aulas_horarios where id_clase = " + tH.getId_clase()+ ";";
+               Statement s2 = cn.createStatement(); 
+               ResultSet rs2 = s2.executeQuery(query);
+               while(rs2.next()){                 
+                   tH.addHorario(rs2.getString("hora"), rs2.getString("aula_lab"));
                }
                
-               query  = "SELECT nombre from asignaturas where id_asignatura = " + tC.getIdA() + ";";
-               rs2 = s.executeQuery(query);
+               query  = "SELECT nombre from asignaturas where id_asignatura = " + tH.getId_asignatura()+ ";";
+               rs2 = s2.executeQuery(query);
                tH.setAsignatura(rs2.getString("nombre"));
            }    
         }catch (Exception e){
@@ -116,7 +120,7 @@ public class DAOHorarios {
             * (Select id_clase from clases where curso = '2ºA' and id_asignatura in 
             * (select id_asignatura from asignaturas where GRADO = 'GIS' AND siglas = 'EDA')));
             */
-           String query = "SELECT * FROM horarios WHERE id_profesor in (SELECT ID_PROFESOR FROM CLASES WHERE CURSO = " +  tC.getCurso() + " and Grupo ="
+           String query = "SELECT * FROM aulas_horarios WHERE id_profesor in (SELECT ID_PROFESOR FROM CLASES WHERE CURSO = " +  tC.getCurso() + " and Grupo ="
                    + " '" + tC.getGrupo() + "' and GRADO = '" + tC.getGrado() +"' and id_asignatura in (SELECT id_asignatura where GRADO =' "+
                    tC.getGrado() + "' and siglas = '" + asignatura + "':";
              rs = s.executeQuery(query);

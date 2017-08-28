@@ -45,6 +45,11 @@ public class TAsignatura {
         this.sigla="";
         this.nombre="";
     }
+
+    public TAsignatura(String nombre) {
+        this.sigla = nombre;
+        this.nombre = nombre;
+    }
     public int getId() {
         return id;
     }
