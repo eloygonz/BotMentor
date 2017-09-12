@@ -106,7 +106,7 @@ class BotMentorStarter(telepot.helper.ChatHandler):
                 if com.estaListo():
                     com.ejecutar()
             elif comando.com == '/ayuda':
-                self.sender.sendMessage('comando ayuda parseado bien!')
+                self.sender.sendMessage('Al pulsar / aparecen los comandos disponibles con un ejemplo de uso en cada uno.')
 
             elif comando.com == 'Profesores' or comando.com == '/profesor':
                 if com.estaListo():
