@@ -40,7 +40,14 @@ public class WS {
     static ResultSet rs;
 
     /**
-     * Web service operation
+     * consultarTutoriasC: Consulta las tutorías de una clase concreta, especificando 
+     * su nombre, cuatrimeste, grado, curso y grupo.
+     * @param asignatura
+     * @param cuatrimestre
+     * @param grado
+     * @param curso
+     * @param grupo
+     * @return Transfer con la información de la tutoría
      */
     @WebMethod(operationName = "consultarTutoriasC")
     public TTutoriaC consultarTutoriasC(@WebParam(name = "asignatura") String asignatura,@WebParam(name = "cuatrimestre") String cuatrimestre, 
@@ -80,6 +87,12 @@ public class WS {
         tutoria.setGrado(tC.getGrado());
         return tutoria;
     }
+    /**
+     * consultarTutoriasA :
+     * Consulta todas las tutorías de una asignatura (en todos los grados)
+     * @param asignatura
+     * @return ArrayList con todos las tutorías existentes.
+     */
         @WebMethod(operationName = "consultarTutoriasA")
     public ArrayList consultarTutoriasA(@WebParam(name = "asignatura") String asignatura) {
         //En este caso se crean 2 listas para almacenar todas las posibles asignaturas (dependiendo
@@ -121,6 +134,12 @@ public class WS {
         }
         return tutorias;
     }
+    /**
+     * consultarTutoriasP: Consulta todas las tutorías que da un profesor.
+     * @param nombre
+     * @param apellidos
+     * @return Devuelve un Arraylist con la información sobre las tutorías del profesor.
+     */
         @WebMethod(operationName = "consultarTutoriasP")
     public ArrayList<TTutoriaC> consultarTutoriasP(@WebParam(name = "nombre") String nombre, @WebParam(name = "apellidos") String apellidos) {
         ArrayList<TClase> clases = new ArrayList<TClase>();
@@ -152,6 +171,14 @@ public class WS {
         }
         return tutorias;
     }
+    /**
+     * consultarHorariosC: Consulta los horarios de una clase concreta, especificando grado,
+     * curso y grupo.
+     * @param grado
+     * @param curso
+     * @param grupo
+     * @return ArrayList con la información de los horarios del curso
+     */
         @WebMethod(operationName = "consultarHorariosC")
     public ArrayList<THorariosC> consultarHorariosC(@WebParam(name = "grado") String grado, @WebParam(name = "curso") String curso, @WebParam(name = "grupo") String grupo) {
         TClase tC = new TClase();
@@ -162,7 +189,15 @@ public class WS {
         DAOHorarios dH = fD.getDAOHorarios(tC,"");
         return dH.getHorarios();
     }
-    
+    /**
+     * consultarHorariosA: Consulta los horarios de una asignatura concreta, especificando
+     * curso, grado y grupo. 
+     * @param asignatura
+     * @param grado
+     * @param curso
+     * @param grupo
+     * @return Transfer con la inforación de los horarios de dicha asignatura
+     */
     @WebMethod(operationName = "consultarHorariosA")
  public THorariosC consultarHorariosA(@WebParam(name = "asignatura") String asignatura, @WebParam(name = "grado") String grado, @WebParam(name = "curso") String curso, @WebParam(name = "grupo") String grupo) {
         TClase tC = new TClase();
@@ -174,9 +209,16 @@ public class WS {
         return dH.getInfo();
     }
     
-    /**
-     * Web service operation
-     */
+  /**
+   * consultarClase: Método interno para obtener información sobre una clase concreta,
+   * especificando curso, grado, grupo, cuatrimestre y nombre de asignatura.
+   * @param curso
+   * @param asignatura
+   * @param grupo
+   * @param cuatrimestre
+   * @param grado
+   * @return Transfer con la información de la asignatura.
+   */
     @WebMethod(operationName = "consultarClase")
     public TClase consultarClase(@WebParam(name = "curso") String curso, @WebParam(name = "asignatura") String asignatura,
             @WebParam(name = "grupo") String grupo, @WebParam(name = "cuatrimestre") String cuatrimestre, @WebParam(name = "grado") String grado) {
@@ -192,9 +234,11 @@ public class WS {
         return dC.getInfoClase();
 
     }
-    /**
-     * Web service operation
-     */
+/**
+ * consultarAsignatura: Consulta inforación sobre una asignatura (código) aportando el nombre
+ * @param nombre
+ * @return  Transfer con la información de la asignatura
+ */
     @WebMethod(operationName = "consultarAsignatura")
     public TAsignatura consultarAsignatura(@WebParam(name = "nombre") String nombre) {
         TAsignatura a = new TAsignatura(nombre);
@@ -202,7 +246,14 @@ public class WS {
         DAOAsignatura dao = fD.getDAOAsignatura(a);
         return dao.getInfoAsignatura();
     }
-    
+    /**
+     * consultarProfesor: Consulta la información relativa a un profesor (corrreo, despacho...),
+     * aportando
+     * nombre y apellidos
+     * @param nombre
+     * @param apellidos
+     * @return Transfer con la información del profesor
+     */
      @WebMethod(operationName = "consultarProfesor")
     public TProfesor consultarProfesor(@WebParam(name = "nombre") String nombre, @WebParam(name = "apellidos") String apellidos) {
         TProfesor p = new TProfesor(nombre, apellidos);
@@ -211,9 +262,12 @@ public class WS {
         return dao.getInfo();
     }
 
-    /**
-     * Web service operation
-     */
+/**
+ * consultarFichaDocenteA: Consultar la ficha docente de una asignatura (URL al documento)
+ * aportando nombre de la asignatura
+ * @param asignatura
+ * @return String con la ruta (URL) al pdf de la ficha docente.
+ */
     @WebMethod(operationName = "consultarFichaDocente")
     public String consultarFichaDocenteA(@WebParam(name = "asignatura") String asignatura) {
         TFichaDocente tF = new TFichaDocente();
@@ -223,6 +277,12 @@ public class WS {
         return dF.getFichaDocente();
         
     }
+    /**
+     * consultarFichasDocentes: Consultar las ficha docentes de un curso completo (URL a los documentos)
+     * @param grado
+     * @param curso
+     * @return ArrayList con Transfer que contiene el nombre de las asignaturas y la ruta de la ficha
+     */
         @WebMethod(operationName = "consultarFichasDocentes")
     public ArrayList<TFichaDocente> consultarFichasDocentes(@WebParam(name = "grado") String grado, @WebParam(name= "curso") String curso) {
       ArrayList<TFichaDocente> fichas = new ArrayList<TFichaDocente>();
@@ -235,9 +295,12 @@ public class WS {
         return fichas;
     }
 
-    /**
-     * Web service operation
-     */
+/**
+ * consultarGrupos:Método interno para consultar los grupos existentes en un curso concreto
+ * @param grado
+ * @param curso
+ * @return  ArrayList de Transfer con los grupos
+ */
     @WebMethod(operationName = "consultarGrupos")
     public ArrayList<TCurso> consultarGrupos(@WebParam(name = "grado") String grado, @WebParam(name = "curso") String curso) {
         ArrayList<TCurso> grupos = new ArrayList<TCurso>();
@@ -250,9 +313,13 @@ public class WS {
         return grupos;
     }
 
-    /**
-     * Web service operation
-     */
+/**
+ * consultarGrupo: Consulta interna para saber si un grupo existe en un curso y grado concretos
+ * @param grado
+ * @param curso
+ * @param grupo
+ * @return Transfer con la información del curso (si no existe está vacío)
+ */
     @WebMethod(operationName = "consultarGrupo")
     public TCurso consultarGrupo(@WebParam(name = "grado") String grado, @WebParam(name = "curso") String curso, @WebParam(name = "grupo") String grupo) {
         TCurso tC = new TCurso(grado,curso, grupo);

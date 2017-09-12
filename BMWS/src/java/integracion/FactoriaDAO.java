@@ -8,8 +8,9 @@ package integracion;
 import negocio.*;
 
 /**
- *
- * @author Eloy
+ * Clase que implementa el patrón Singleton y el patrón Factoria, encargado de generar
+ * el dao solicitado y devolver una instancia del mismo.
+ * @author Eloyo
  */
 public class FactoriaDAO {
    private static FactoriaDAO instance = null;

@@ -12,14 +12,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ *Clase que se encarga de la conexión con la base de datos.
  * @author Eloyo
  */
 public class ConexionBD {
 
     
     static Connection cnn = null;
-    
     
     public static Connection Enlace(Connection cn) throws SQLException{
         String ruta = "db.db";

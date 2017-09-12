@@ -18,9 +18,8 @@ import javax.persistence.Table;
  
 /**
  *
- * @author John
+ * @author Eloy
  */
-
 @Entity
 @Table(name = "ASIGNATURAS")
 public class TAsignatura {
