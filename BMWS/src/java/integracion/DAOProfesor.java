@@ -51,12 +51,12 @@ public class DAOProfesor {
         try{
         cn = ConexionBD.Enlace(cn);
         s = cn.createStatement();       
-        String query  = "SELECT * from profesores where nombre = '" + transfer.getNombre() + "' and apellidos = '" + transfer.getApellidos()+ "';";
+        String query  = "SELECT * from profesores where nombre like '" + transfer.getNombre() + "' and apellidos like '" + transfer.getApellidos()+ "';";
         rs = s.executeQuery(query);
     
         while(rs.next()){
             transfer.setNombre(rs.getString("nombre"));
-            transfer.setNombre(rs.getString("id"));
+            transfer.setId(rs.getInt("id_profesor"));
             transfer.setCorreo(rs.getString("correo"));
             transfer.setDespacho(rs.getString("despacho"));
             transfer.setTlf(rs.getString("telefono"));

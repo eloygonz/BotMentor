@@ -16,13 +16,32 @@ import javax.persistence.Table;
 @Table(name="TUTORIAS")
 public class TTutoria {
     
-    public TTutoria(int id,String dat){
+    public TTutoria(int id,String hora, String cu){
         idC = id;
-        datos = dat;
+        this.hora = hora;
+        this.cuatrimestre = cu;
     }
     public TTutoria(){
         idC = -1;
-        datos = "";
+        hora = "";
+        cuatrimestre = "0";
+        
+    }
+
+    public String getHora() {
+        return hora;
+    }
+
+    public void setHora(String hora) {
+        this.hora = hora;
+    }
+
+    public String getCuatrimestre() {
+        return cuatrimestre;
+    }
+
+    public void setCuatrimestre(String cuatrimestre) {
+        this.cuatrimestre = cuatrimestre;
     }
     private int idC;
 
@@ -33,15 +52,8 @@ public class TTutoria {
     public void setIdC(int idC) {
         this.idC = idC;
     }
-
-    public String getDatos() {
-        return datos;
-    }
-
-    public void setDatos(String Datos) {
-        this.datos = Datos;
-    }
-    private String datos;
+    private String hora;
+    private String cuatrimestre;
     
     
 }

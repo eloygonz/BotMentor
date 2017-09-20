@@ -9,6 +9,7 @@ import negocio.TTutoria;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 /**
  *
@@ -26,38 +27,27 @@ private TTutoria transfer;
     public DAOTutoria() {
        transfer = new TTutoria();
     }
-    public TTutoria getInfoTutoria(){
+    public ArrayList<TTutoria> getInfoTutoria(int id_prof){
+        ArrayList<TTutoria> lista = new ArrayList<TTutoria>();
         try{
            cn = ConexionBD.Enlace(cn);
            s = cn.createStatement();       
            String query;
-           query = "SELECT datos from tutorias where idC = '"+ transfer.getIdC() + "';" ;
+           query = "SELECT * from tutorias where id_profesor = '"+ id_prof + "';" ;
            rs = s.executeQuery(query);
     
            while(rs.next()){
-               transfer.setDatos(rs.getString("datos"));
+               transfer = new TTutoria();
+               transfer.setIdC(rs.getInt("id_profesor"));
+               transfer.setHora(rs.getString("hora"));
+               transfer.setCuatrimestre(rs.getString("cuatrimestre"));
+               lista.add(transfer);
            }
 
         }catch (Exception e){
             e.printStackTrace();
         }
-        return transfer;        
+        return lista;        
     }
-    public TTutoria getTutoria(int idC){
-        try{
-           cn = ConexionBD.Enlace(cn);
-           s = cn.createStatement();       
-           String query;
-           query = "SELECT datos from tutorias where idC = '"+ idC + "';" ;
-           rs = s.executeQuery(query);
-    
-           while(rs.next()){
-               transfer.setDatos(rs.getString("datos"));
-           }
 
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return transfer;        
-    }
 }

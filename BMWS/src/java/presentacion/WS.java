@@ -49,6 +49,7 @@ public class WS {
      * @param grupo
      * @return Transfer con la información de la tutoría
      */
+    
     @WebMethod(operationName = "consultarTutoriasC")
     public TTutoriaC consultarTutoriasC(@WebParam(name = "asignatura") String asignatura,@WebParam(name = "cuatrimestre") String cuatrimestre, 
             @WebParam(name = "grado") String grado ,@WebParam(name = "curso") String curso, @WebParam(name = "grupo") String grupo) {
@@ -68,6 +69,7 @@ public class WS {
         necesaria para recuperar los datos solicitados. Esto se hace en cadena hasta
         recuperar todos los datos.
         */
+        /*
         tA = new TAsignatura(0, asignatura, "", grado);
         daoA = new DAOAsignatura(tA);
         tA = daoA.getInfoAsignatura();
@@ -85,6 +87,7 @@ public class WS {
         tutoria.setDatos(tT.getDatos());
         tutoria.setGrupo(tC.getGrupo());
         tutoria.setGrado(tC.getGrado());
+        */
         return tutoria;
     }
     /**
@@ -111,6 +114,7 @@ public class WS {
         necesaria para recuperar los datos solicitados. Esto se hace en cadena hasta
         recuperar todos los datos.
         */
+        /*
         tA = new TAsignatura(0, asignatura, "", "");
         daoA = new DAOAsignatura(tA);
         asignaturas = daoA.getAsignaturas();
@@ -131,7 +135,7 @@ public class WS {
             tutoria.setGrupo(tC.getGrupo());
             tutoria.setGrado(tC.getGrado());
             tutorias.add(tutoria);
-        }
+        }*/
         return tutorias;
     }
     /**
@@ -141,7 +145,7 @@ public class WS {
      * @return Devuelve un Arraylist con la información sobre las tutorías del profesor.
      */
         @WebMethod(operationName = "consultarTutoriasP")
-    public ArrayList<TTutoriaC> consultarTutoriasP(@WebParam(name = "nombre") String nombre, @WebParam(name = "apellidos") String apellidos) {
+    public ArrayList<TTutoria> consultarTutoriasP(@WebParam(name = "nombre") String nombre, @WebParam(name = "apellidos") String apellidos) {
         ArrayList<TClase> clases = new ArrayList<TClase>();
         ArrayList<TAsignatura> asignaturas = new ArrayList<TAsignatura>();
         ArrayList<TTutoriaC> tutorias = new ArrayList<TTutoriaC>();
@@ -159,17 +163,8 @@ public class WS {
         */
         dP = new DAOProfesor(tP);
         tP = dP.getInfo();
-        dC = new DAOClase();
-        clases = dC.getClasesP(tP.getId());
-        for (int i = 0; i < clases.size(); i++){
-            tC = clases.get(i);
-            tA = new TAsignatura(clases.get(i).getId());
-            dT = new DAOTutoria();
-            tT = dT.getTutoria(clases.get(i).getId());
-            tutorias.add(new TTutoriaC(tT.getIdC(),tT.getDatos(),tA.getNombre(),tC.getCurso()
-            ,tC.getGrupo(),tP.getNombre(),tC.getGrado(),tC.getCuatrimestre()));
-        }
-        return tutorias;
+        dT = new DAOTutoria();
+        return dT.getInfoTutoria(tP.getId());
     }
     /**
      * consultarHorariosC: Consulta los horarios de una clase concreta, especificando grado,

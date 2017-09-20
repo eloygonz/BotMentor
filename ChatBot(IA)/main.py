@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 import telepot
 from chatterbot import ChatBot
-from trainers import training_profesores as t_p
-from trainers import training_asignaturas as t_a
-from telegram import bot_telegram as bots
+from  bot_telegram import *
 from telepot.loop import MessageLoop
 from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton
 from telepot.delegate import (

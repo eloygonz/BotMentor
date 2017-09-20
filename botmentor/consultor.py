@@ -29,10 +29,8 @@ def consultaHorarios(grado, curso, grupo):
     return respuesta
 
 
-def consultaProfesor( nombre, apellido, apellido2):
-    url = 'http://localhost:8080/BMWS/WS?WSDL'
-    client = suds.client.Client(url)
-    respuesta = client.service.consultarProfesor(apellido + ' ' + apellido2 + ', ' + nombre)
+def consultaProfesor( nombre, apellido):
+    respuesta = client.service.consultarProfesor(nombre, apellido)
     return respuesta
 
 
@@ -56,8 +54,8 @@ def consultaTutoriasAsignatura(nombre):
     return respuesta
 
 
-def consultaTutoriasProfesor(nombre, apellido, apellido2):
-    respuesta = client.service.consultarTutoriasP(apellido + " " + apellido2 + ", " + nombre)
+def consultaTutoriasProfesor(nombre, apellido):
+    respuesta = client.service.consultarTutoriasP(nombre, apellido)
     return respuesta
 
 

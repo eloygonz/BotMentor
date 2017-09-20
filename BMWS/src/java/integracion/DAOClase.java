@@ -87,13 +87,14 @@ private TClase transfer;
             cn = ConexionBD.Enlace(cn);
             s = cn.createStatement();       
             String query;
-            query = "SELECT * FROM CLASES WHERE IDP = '" + profesor + "';" ;
+            query = "SELECT * FROM CLASES WHERE id_profesor = '" + profesor + "';" ;
             rs = s.executeQuery(query);
     
             while(rs.next()){
                 
-                transfer.setId(rs.getInt("idC"));
-                transfer.setIdP(rs.getInt("idP"));
+                transfer.setId(rs.getInt("id_clase"));
+                transfer.setIdP(rs.getInt("id_profesor"));
+                lista.add(transfer);
             }
         }catch (Exception e){
             e.printStackTrace();

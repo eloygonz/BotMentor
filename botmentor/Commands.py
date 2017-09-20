@@ -18,11 +18,16 @@ class Command():
         self.com = c[0]
         if len(c) == 2:
             self.nombre = c[1]
-        elif len(c) == 4 and (self.com == '/profesor' or self.com == 'tutoria'):
-            self.nombre = c[1]
-            self.apellido = c[2]
-            self.apellido2 = c[3]
-        elif len(c) == 4 and not(self.com == '/profesor' or self.com == 'tutoria'):
+        elif self.com == '/profesor' or self.com == '/tutoria':
+            d = ""
+            for i in range(1,len(c)):
+                d = d + ' ' + c[i]
+            c2 = d.split(',')
+            c2[0] = c2[0][:2].replace(' ', '') + c2[0][2:]
+            self.nombre = c2[0]
+            c2[1] = c2[1][:2].replace(' ', '') + c2[1][2:]
+            self.apellido = c2[1]
+        elif len(c) == 4 and not(self.com == '/profesor' or self.com == '/tutoria'):
             self.grado = c[1]
             self.curso = c[2]
             self.grupo = c[3]
@@ -60,15 +65,19 @@ class Command():
         else:
             return False
     @classmethod
-    def existeProfesor(nombre, apellido):
-        return True
+    def existeProfesor(self, nombre, apellido):
+        res = consultaProfesor(nombre,apellido)
+        if res.id > 0:
+            return True
+        else:
+            return False
 
     @classmethod
     def parseCommand(self):
         # type: (object, object) -> object
         listaComandosCompletos = ['/horarios', '/fichas']
         listaComandosSimples = ['ayuda', '/start']
-        listaComandosEspecificos = ['/horario', '/tutoria', '/clase']
+        listaComandosEspecificos = ['/horario', '/clase']
         listaGrados = ['GII', 'GIS', 'GIC', 'GDV', 'II', 'MII', 'DGMI']
         if self.com in listaComandosCompletos:
             if self.grado is not None and self.grado in listaGrados:
@@ -80,7 +89,8 @@ class Command():
             if self.grado is not None and self.grado in listaGrados:
                 if self.curso is not None and self.numCurso() >= int(self.curso) and int(self.curso) >= 0:
                     return self.parseGrupo() and self.existeAsignatura(self.nombre)
-        elif self.com == '/profesor' and self.nombre is not None and self.apellido is not None and self.apellido2 is not None:
+        elif (self.com == '/profesor' or self.com =='/tutoria') and self.nombre is not None and self.apellido is not None:
+
             return self.existeProfesor(self.nombre, self.apellido)
         elif self.com == '/ficha' and self.nombre is not None:
             return self.existeAsignatura(self.nombre)
@@ -140,19 +150,17 @@ class CommandTutoriaAsignatura(Command):
 
 class CommandTutoriaProfesor(Command):
     apellido = None
-    apellido2 = None
 
-    def __init__(self, nombre, apellido, apellido2):
+    def __init__(self, nombre, apellido):
         self.nombre = nombre
         self.apellido = apellido
-        self.apellido2 = apellido2
 
     def ejecutar(self):
-        return consultaTutoriasProfesor(self.nombre, self.apellido, self.apellido2)
+        return consultaTutoriasProfesor(self.nombre, self.apellido)
 
 
     def estaListo(self):
-        if self.nombre is not None and self.apellido2 is not None and self.apellido is not None:
+        if self.nombre is not None and self.apellido is not None:
             return True
         else:
             return False
@@ -179,18 +187,16 @@ class CommandTutoriaClase(Command):
 
 class CommandProfesor(Command):
     apellido = None
-    apellido2 = None
 
-    def __init__(self, nombre, apellido, apellido2):
+    def __init__(self, nombre, apellido):
         self.nombre = nombre
         self.apellido = apellido
-        self.apellido2 = apellido2
 
     def ejecutar(self):
-        return consultaProfesor(self.nombre, self.apellido, self.apellido2)
+        return consultaProfesor(self.nombre, self.apellido)
 
     def estaListo(self):
-        if self.nombre is not None and self.apellido is not None and self.apellido2 is not None:
+        if self.nombre is not None and self.apellido is not None:
             return True
         else:
             return False
